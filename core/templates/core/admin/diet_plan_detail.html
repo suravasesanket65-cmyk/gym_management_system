@@ -1,0 +1,132 @@
+{% extends 'core/admin/admin_base.html' %}
+
+{% block title %}Diet Plan Details: {{ diet_plan.name }}{% endblock %}
+
+{% block admin_content %}
+  <div class="page-header" style="display: flex; justify-content: space-between; align-items: flex-start;">
+    <div>
+      <h1 class="page-title">{{ diet_plan.name }}</h1>
+      <p class="page-subtitle" style="color: var(--neon-orange); font-size: 16px;">Goal: {{ diet_plan.goal }}</p>
+    </div>
+    <div style="display: flex; gap: 10px;">
+      <a href="{% url 'admin_diet_plan_edit' diet_plan.id %}" class="btn btn-primary"><i class="fas fa-edit"></i> Edit Plan</a>
+      <a href="{% url 'admin_diet_plans' %}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back</a>
+    </div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: 1fr; gap: 24px;">
+    
+    <!-- General Information -->
+    <div class="card" style="margin-bottom: 24px;">
+      <div class="card-header">
+        <h3 class="card-title">Plan Overview</h3>
+      </div>
+      <div style="padding: 24px;">
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-bottom: 20px;">
+          <div>
+            <div style="color: var(--text-muted); font-size: 14px; margin-bottom: 4px;">Member</div>
+            <div style="color: var(--text-main); font-weight: 500; font-size: 16px;">
+              <a href="{% url 'admin_member_detail' diet_plan.member.id %}" style="color: var(--neon-orange); text-decoration: none;">{{ diet_plan.member.first_name }} {{ diet_plan.member.last_name }}</a>
+            </div>
+          </div>
+          <div>
+            <div style="color: var(--text-muted); font-size: 14px; margin-bottom: 4px;">Trainer</div>
+            <div style="color: var(--text-main); font-weight: 500; font-size: 16px;">
+              {% if diet_plan.trainer %}
+                <a href="{% url 'admin_trainer_detail' diet_plan.trainer.id %}" style="color: var(--neon-orange); text-decoration: none;">{{ diet_plan.trainer.full_name }}</a>
+              {% else %}
+                N/A
+              {% endif %}
+            </div>
+          </div>
+          <div>
+            <div style="color: var(--text-muted); font-size: 14px; margin-bottom: 4px;">Duration</div>
+            <div style="color: var(--text-main); font-weight: 500; font-size: 16px;">{{ diet_plan.start_date|date:"M d, Y" }} - {{ diet_plan.end_date|date:"M d, Y" }}</div>
+          </div>
+          <div>
+            <div style="color: var(--text-muted); font-size: 14px; margin-bottom: 4px;">Status</div>
+            <div>
+              {% if diet_plan.status == 'Active' %}
+                <span class="status-badge status-active">{{ diet_plan.status }}</span>
+              {% elif diet_plan.status == 'Inactive' %}
+                <span class="status-badge status-danger">{{ diet_plan.status }}</span>
+              {% else %}
+                <span class="status-badge status-warning">{{ diet_plan.status }}</span>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        
+        <div style="margin-bottom: 20px;">
+          <div style="color: var(--text-muted); font-size: 14px; margin-bottom: 4px;">Daily Calories</div>
+          <div style="color: var(--text-main); font-weight: 500; font-size: 16px;">{{ diet_plan.daily_calories|default:"Not specified" }} kcal</div>
+        </div>
+        
+        {% if diet_plan.notes %}
+        <div style="margin-top: 20px;">
+          <div style="color: var(--text-muted); font-size: 14px; margin-bottom: 4px;">Notes</div>
+          <div style="color: var(--text-main); font-size: 14px; background: rgba(255,255,255,0.02); padding: 16px; border-radius: 8px;">{{ diet_plan.notes }}</div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+    
+    <!-- Meals -->
+    <div class="card">
+      <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+        <h3 class="card-title">Meals ({{ diet_plan.meals.count }})</h3>
+        <a href="{% url 'admin_diet_meal_add' diet_plan.id %}" class="btn btn-primary" style="padding: 6px 12px; font-size: 12px;"><i class="fas fa-plus"></i> Add Meal</a>
+      </div>
+      
+      {% if diet_plan.meals.all %}
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Type/Time</th>
+            <th>Food Description</th>
+            <th>Macros</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for m in diet_plan.meals.all %}
+          <tr>
+            <td>
+              <div style="font-weight: 500; color: var(--text-main);">{{ m.meal_type }}</div>
+              {% if m.meal_time %}<div style="color: var(--text-muted); font-size: 12px;">{{ m.meal_time|time:"h:i A" }}</div>{% endif %}
+            </td>
+            <td>
+              <div style="color: var(--text-main);">{{ m.food_description }}</div>
+              {% if m.notes %}<div style="color: var(--text-muted); font-size: 12px;">{{ m.notes }}</div>{% endif %}
+            </td>
+            <td>
+              <div style="color: var(--text-main); font-weight: 500;">
+                {% if m.calories %}Cal: {{ m.calories }}<br>{% endif %}
+                <span style="font-size: 12px; color: var(--text-muted);">
+                  {% if m.protein %}P: {{ m.protein }}g {% endif %}
+                  {% if m.carbohydrates %}C: {{ m.carbohydrates }}g {% endif %}
+                  {% if m.fats %}F: {{ m.fats }}g{% endif %}
+                </span>
+              </div>
+            </td>
+            <td>
+              <div style="display: flex; gap: 8px;">
+                <a href="{% url 'admin_diet_meal_edit' diet_plan.id m.id %}" class="btn btn-secondary" style="padding: 6px 10px; font-size: 12px;"><i class="fas fa-edit"></i></a>
+                <a href="{% url 'admin_diet_meal_delete' diet_plan.id m.id %}" class="btn btn-secondary" style="padding: 6px 10px; font-size: 12px; color: var(--danger); border-color: var(--danger);"><i class="fas fa-trash"></i></a>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <div class="empty-state">
+        <i class="fas fa-utensils"></i>
+        <h3>No meals assigned</h3>
+        <p>Start adding meals to this diet plan.</p>
+      </div>
+      {% endif %}
+    </div>
+    
+  </div>
+{% endblock %}

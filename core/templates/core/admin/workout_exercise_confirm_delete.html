@@ -1,0 +1,33 @@
+{% extends 'core/admin/admin_base.html' %}
+
+{% block title %}Remove Exercise{% endblock %}
+
+{% block admin_content %}
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Remove Exercise</h1>
+      <p class="page-subtitle" style="color: var(--danger);">Are you sure you want to remove this exercise from the workout plan?</p>
+    </div>
+  </div>
+
+  <div class="card" style="max-width: 600px; border-color: var(--danger);">
+    <div class="card-header" style="border-bottom-color: var(--danger);">
+      <h3 class="card-title" style="color: var(--danger);"><i class="fas fa-exclamation-triangle"></i> Warning</h3>
+    </div>
+    <div style="padding: 24px;">
+      <p style="margin-bottom: 16px; line-height: 1.6; color: var(--text-main);">
+        You are about to remove <strong>{{ object.exercise.name }}</strong> from the <strong>{{ workout.name }}</strong> workout plan.
+      </p>
+
+      <form method="POST">
+        {% csrf_token %}
+        <div style="display: flex; gap: 16px; align-items: center;">
+          <button type="submit" class="btn btn-primary" style="background-color: var(--danger); border-color: var(--danger);">
+            <i class="fas fa-trash"></i> Yes, Remove Exercise
+          </button>
+          <a href="{% url 'admin_workout_detail' workout.id %}" class="btn btn-secondary">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}

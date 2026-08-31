@@ -1,0 +1,74 @@
+{% extends 'core/admin/admin_base.html' %}
+
+{% block title %}{% if object %}Edit Expense{% else %}Record Expense{% endif %}{% endblock %}
+
+{% block admin_content %}
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">{% if object %}Edit Expense{% else %}Record New Expense{% endif %}</h1>
+      <p class="page-subtitle">Configure expense details below.</p>
+    </div>
+    <a href="{% url 'admin_expenses' %}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back to List</a>
+  </div>
+
+  <div class="card" style="max-width: 800px;">
+    <div class="card-header">
+      <h3 class="card-title">Expense Details</h3>
+    </div>
+    <div style="padding: 24px;">
+      <form method="POST">
+        {% csrf_token %}
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+          <div>
+            <label style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px; color: var(--text-main);">Category</label>
+            {{ form.category }}
+            {% if form.category.errors %}<div style="color: var(--danger); font-size: 12px; margin-top: 4px;">{{ form.category.errors }}</div>{% endif %}
+          </div>
+          <div>
+            <label style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px; color: var(--text-main);">Amount ($)</label>
+            {{ form.amount }}
+            {% if form.amount.errors %}<div style="color: var(--danger); font-size: 12px; margin-top: 4px;">{{ form.amount.errors }}</div>{% endif %}
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+          <div>
+            <label style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px; color: var(--text-main);">Date</label>
+            {{ form.expense_date }}
+            {% if form.expense_date.errors %}<div style="color: var(--danger); font-size: 12px; margin-top: 4px;">{{ form.expense_date.errors }}</div>{% endif %}
+          </div>
+          <div>
+            <label style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px; color: var(--text-main);">Payment Method</label>
+            {{ form.payment_method }}
+            {% if form.payment_method.errors %}<div style="color: var(--danger); font-size: 12px; margin-top: 4px;">{{ form.payment_method.errors }}</div>{% endif %}
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+          <div>
+            <label style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px; color: var(--text-main);">Reference / Receipt No.</label>
+            {{ form.reference }}
+            {% if form.reference.errors %}<div style="color: var(--danger); font-size: 12px; margin-top: 4px;">{{ form.reference.errors }}</div>{% endif %}
+          </div>
+          <div>
+            <label style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px; color: var(--text-main);">Recorded By</label>
+            {{ form.recorded_by }}
+            {% if form.recorded_by.errors %}<div style="color: var(--danger); font-size: 12px; margin-top: 4px;">{{ form.recorded_by.errors }}</div>{% endif %}
+          </div>
+        </div>
+        
+        <div style="margin-bottom: 30px;">
+          <label style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px; color: var(--text-main);">Description</label>
+          {{ form.description }}
+          {% if form.description.errors %}<div style="color: var(--danger); font-size: 12px; margin-top: 4px;">{{ form.description.errors }}</div>{% endif %}
+        </div>
+
+        <div style="display: flex; gap: 12px;">
+          <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Expense</button>
+          <a href="{% url 'admin_expenses' %}" class="btn btn-secondary">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}

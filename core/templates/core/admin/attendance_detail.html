@@ -1,0 +1,54 @@
+{% extends 'core/admin/admin_base.html' %}
+
+{% block title %}Attendance Details{% endblock %}
+
+{% block admin_content %}
+  <div class="page-header" style="display: flex; justify-content: space-between; align-items: flex-start;">
+    <div>
+      <h1 class="page-title">Attendance Details</h1>
+      <p class="page-subtitle" style="color: var(--neon-orange); font-size: 16px;">{{ attendance.check_in_time|date:"M d, Y" }}</p>
+    </div>
+    <div style="display: flex; gap: 10px;">
+      <a href="{% url 'admin_attendance_edit' attendance.id %}" class="btn btn-primary"><i class="fas fa-edit"></i> Edit Record</a>
+      <a href="{% url 'admin_attendance' %}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back</a>
+    </div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: 1fr; gap: 24px; max-width: 600px;">
+    
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Record Information</h3>
+      </div>
+      <div style="padding: 24px;">
+        <div style="margin-bottom: 20px;">
+          <div style="color: var(--text-muted); font-size: 14px; margin-bottom: 4px;">Member Name</div>
+          <div style="color: var(--text-main); font-weight: 500; font-size: 16px;">
+            <a href="{% url 'admin_member_detail' attendance.member.id %}" style="color: var(--neon-orange); text-decoration: none;">{{ attendance.member.first_name }} {{ attendance.member.last_name }}</a>
+          </div>
+        </div>
+        <div style="margin-bottom: 20px;">
+          <div style="color: var(--text-muted); font-size: 14px; margin-bottom: 4px;">Member Contact</div>
+          <div style="color: var(--text-main); font-size: 14px;">{{ attendance.member.email }} | {{ attendance.member.phone }}</div>
+        </div>
+        <div style="margin-bottom: 20px; display: grid; grid-template-columns: 1fr 1fr;">
+          <div>
+            <div style="color: var(--text-muted); font-size: 14px; margin-bottom: 4px;">Check-in Time</div>
+            <div style="color: var(--text-main); font-weight: 500; font-size: 16px;">{{ attendance.check_in_time|date:"M d, Y h:i A" }}</div>
+          </div>
+          <div>
+            <div style="color: var(--text-muted); font-size: 14px; margin-bottom: 4px;">Check-out Time</div>
+            <div style="color: var(--text-main); font-weight: 500; font-size: 16px;">
+              {% if attendance.check_out_time %}
+                {{ attendance.check_out_time|date:"M d, Y h:i A" }}
+              {% else %}
+                <span style="color: var(--neon-orange);">Not checked out (In Gym)</span>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+{% endblock %}

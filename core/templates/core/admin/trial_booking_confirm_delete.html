@@ -1,0 +1,46 @@
+{% extends 'core/admin/admin_base.html' %}
+
+{% block title %}Delete Trial Booking{% endblock %}
+
+{% block admin_content %}
+  <div class="page-header">
+    <div>
+      <a href="{% url 'admin_trial_bookings' %}" style="color: var(--text-muted); text-decoration: none; font-size: 14px; margin-bottom: 8px; display: inline-block;">
+        <i class="fas fa-arrow-left"></i> Back to Trial Bookings
+      </a>
+      <h1 class="page-title">Delete Trial Booking</h1>
+    </div>
+  </div>
+
+  <div class="card" style="max-width: 600px; border-left: 4px solid var(--danger);">
+    <div class="card-header" style="background-color: rgba(239, 68, 68, 0.05);">
+      <h3 class="card-title text-danger" style="display: flex; align-items: center; gap: 8px;">
+        <i class="fas fa-exclamation-triangle"></i> Confirm Deletion
+      </h3>
+    </div>
+    
+    <div style="padding: 24px;">
+      <p style="margin-bottom: 24px; font-size: 16px;">
+        Are you sure you want to delete the trial booking for <strong>{{ object.first_name }} {{ object.last_name }}</strong>?
+      </p>
+      
+      <div style="background-color: var(--bg-card-hover); padding: 16px; border-radius: 8px; margin-bottom: 24px;">
+        <p style="margin: 0 0 8px;"><strong>Email:</strong> {{ object.email }}</p>
+        <p style="margin: 0 0 8px;"><strong>Status:</strong> {{ object.status }}</p>
+        <p style="margin: 0;"><strong>Date:</strong> {{ object.created_at|date:"M d, Y" }}</p>
+      </div>
+      
+      <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 24px;">
+        This action cannot be undone. All data associated with this trial booking will be permanently removed.
+      </p>
+
+      <form method="POST">
+        {% csrf_token %}
+        <div style="display: flex; gap: 12px;">
+          <a href="{% url 'admin_trial_booking_detail' object.id %}" class="btn btn-outline" style="flex: 1; text-align: center;">Cancel</a>
+          <button type="submit" class="btn btn-primary" style="flex: 1; background-color: var(--danger); border-color: var(--danger);">Yes, Delete Booking</button>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}

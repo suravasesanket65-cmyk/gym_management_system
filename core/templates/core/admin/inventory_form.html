@@ -1,0 +1,91 @@
+{% extends 'core/admin/admin_base.html' %}
+
+{% block title %}{% if object %}Edit Inventory Item{% else %}Add Inventory Item{% endif %}{% endblock %}
+
+{% block admin_content %}
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">{% if object %}Edit Item: {{ object.item_name }}{% else %}Add New Inventory Item{% endif %}</h1>
+      <p class="page-subtitle">Configure inventory details below.</p>
+    </div>
+    <a href="{% url 'admin_inventory' %}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back to List</a>
+  </div>
+
+  <div class="card" style="max-width: 800px;">
+    <div class="card-header">
+      <h3 class="card-title">Item Information</h3>
+    </div>
+    <div style="padding: 24px;">
+      <form method="POST">
+        {% csrf_token %}
+        
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin-bottom: 20px;">
+          <div>
+            <label style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px; color: var(--text-main);">Item Name</label>
+            {{ form.item_name }}
+            {% if form.item_name.errors %}<div style="color: var(--danger); font-size: 12px; margin-top: 4px;">{{ form.item_name.errors }}</div>{% endif %}
+          </div>
+          <div>
+            <label style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px; color: var(--text-main);">SKU</label>
+            {{ form.sku }}
+            {% if form.sku.errors %}<div style="color: var(--danger); font-size: 12px; margin-top: 4px;">{{ form.sku.errors }}</div>{% endif %}
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+          <div>
+            <label style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px; color: var(--text-main);">Category</label>
+            {{ form.category }}
+            {% if form.category.errors %}<div style="color: var(--danger); font-size: 12px; margin-top: 4px;">{{ form.category.errors }}</div>{% endif %}
+          </div>
+          <div>
+            <label style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px; color: var(--text-main);">Status</label>
+            {{ form.status }}
+            {% if form.status.errors %}<div style="color: var(--danger); font-size: 12px; margin-top: 4px;">{{ form.status.errors }}</div>{% endif %}
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+          <div>
+            <label style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px; color: var(--text-main);">Quantity</label>
+            {{ form.quantity }}
+            {% if form.quantity.errors %}<div style="color: var(--danger); font-size: 12px; margin-top: 4px;">{{ form.quantity.errors }}</div>{% endif %}
+          </div>
+          <div>
+            <label style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px; color: var(--text-main);">Min Stock Level</label>
+            {{ form.min_stock_level }}
+            {% if form.min_stock_level.errors %}<div style="color: var(--danger); font-size: 12px; margin-top: 4px;">{{ form.min_stock_level.errors }}</div>{% endif %}
+          </div>
+          <div>
+            <label style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px; color: var(--text-main);">Unit</label>
+            {{ form.unit }}
+            {% if form.unit.errors %}<div style="color: var(--danger); font-size: 12px; margin-top: 4px;">{{ form.unit.errors }}</div>{% endif %}
+          </div>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-bottom: 30px;">
+          <div>
+            <label style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px; color: var(--text-main);">Purchase Price</label>
+            {{ form.purchase_price }}
+            {% if form.purchase_price.errors %}<div style="color: var(--danger); font-size: 12px; margin-top: 4px;">{{ form.purchase_price.errors }}</div>{% endif %}
+          </div>
+          <div>
+            <label style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px; color: var(--text-main);">Supplier</label>
+            {{ form.supplier }}
+            {% if form.supplier.errors %}<div style="color: var(--danger); font-size: 12px; margin-top: 4px;">{{ form.supplier.errors }}</div>{% endif %}
+          </div>
+          <div>
+            <label style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px; color: var(--text-main);">Location</label>
+            {{ form.location }}
+            {% if form.location.errors %}<div style="color: var(--danger); font-size: 12px; margin-top: 4px;">{{ form.location.errors }}</div>{% endif %}
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 12px;">
+          <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Item</button>
+          <a href="{% url 'admin_inventory' %}" class="btn btn-secondary">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}

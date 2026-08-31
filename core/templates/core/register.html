@@ -1,0 +1,108 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Join Now — CORESA Fitness</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Anton&family=Work+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'core/css/style.css' %}">
+</head>
+
+<body class="auth-body">
+
+  {% if messages %}
+  <div style="position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px;">
+    {% for message in messages %}
+      <div style="padding: 16px 24px; border-radius: 8px; font-weight: 500; font-size: 14px;
+        {% if message.tags == 'error' %}background-color: var(--danger); color: white;
+        {% elif message.tags == 'success' %}background-color: var(--success); color: white;
+        {% else %}background-color: var(--steel); color: var(--text-main);{% endif %}
+        box-shadow: 0 4px 12px rgba(0,0,0,0.5);">
+        {{ message }}
+      </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <div class="glass-card" style="max-width: 500px;">
+    <a href="{% url 'home' %}" class="back-home-link">
+      ← Back to Home
+    </a>
+
+    <div class="auth-header">
+      <a href="{% url 'home' %}" class="auth-logo">CORE<span>SA</span></a>
+      <h2>Create Your Account</h2>
+      <p>Start your performance transformation today</p>
+    </div>
+
+    <form class="auth-form" method="POST" action="{% url 'register' %}">
+      {% csrf_token %}
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="first_name">First Name</label>
+          <div class="form-input-wrapper">
+            <input type="text" id="first_name" name="first_name" placeholder="first name" value="{{ form.first_name.value|default_if_none:'' }}" required>
+            {% if form.first_name.errors %}<div style="color: var(--danger); font-size: 12px; margin-top: 4px;">{{ form.first_name.errors }}</div>{% endif %}
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="last_name">Last Name</label>
+          <div class="form-input-wrapper">
+            <input type="text" id="last_name" name="last_name" placeholder="last name" value="{{ form.last_name.value|default_if_none:'' }}" required>
+            {% if form.last_name.errors %}<div style="color: var(--danger); font-size: 12px; margin-top: 4px;">{{ form.last_name.errors }}</div>{% endif %}
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="username">Username</label>
+        <div class="form-input-wrapper">
+          <input type="text" id="username" name="username" placeholder="Choose a username" value="{{ form.username.value|default_if_none:'' }}" required>
+          {% if form.username.errors %}<div style="color: var(--danger); font-size: 12px; margin-top: 4px;">{{ form.username.errors }}</div>{% endif %}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <div class="form-input-wrapper">
+          <input type="email" id="email" name="email" placeholder="you@email.com" value="{{ form.email.value|default_if_none:'' }}" required>
+          {% if form.email.errors %}<div style="color: var(--danger); font-size: 12px; margin-top: 4px;">{{ form.email.errors }}</div>{% endif %}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="phone">Phone Number</label>
+        <div class="form-input-wrapper">
+          <input type="text" id="phone" name="phone" placeholder="+91 00000 00000" value="{{ form.phone.value|default_if_none:'' }}" required>
+          {% if form.phone.errors %}<div style="color: var(--danger); font-size: 12px; margin-top: 4px;">{{ form.phone.errors }}</div>{% endif %}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="form-input-wrapper">
+          <input type="password" id="password" name="password" placeholder="Create a strong password" required>
+          {% if form.password.errors %}<div style="color: var(--danger); font-size: 12px; margin-top: 4px;">{{ form.password.errors }}</div>{% endif %}
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-full">
+        Complete Registration
+      </button>
+    </form>
+
+    <div class="auth-footer-text">
+      Already have an account? <a href="{% url 'login' %}">Sign In</a>
+    </div>
+  </div>
+
+</body>
+
+</html>

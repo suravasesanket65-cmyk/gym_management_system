@@ -1,0 +1,86 @@
+{% extends 'core/admin/admin_base.html' %}
+
+{% block title %}Membership Plan: {{ plan.plan_name }}{% endblock %}
+
+{% block admin_content %}
+  <div class="page-header" style="display: flex; justify-content: space-between; align-items: flex-start;">
+    <div>
+      <h1 class="page-title">{{ plan.plan_name }}</h1>
+      <p class="page-subtitle" style="color: var(--neon-orange); font-size: 18px; font-weight: 500;">${{ plan.price }} / {{ plan.duration_months }} Months</p>
+    </div>
+    <div style="display: flex; gap: 10px;">
+      <a href="{% url 'admin_plan_edit' plan.id %}" class="btn btn-primary"><i class="fas fa-edit"></i> Edit Plan</a>
+      <a href="{% url 'admin_plans' %}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back</a>
+    </div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 24px;">
+    
+    <!-- Plan Information -->
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Plan Details</h3>
+      </div>
+      <div style="padding: 24px;">
+        <div style="margin-bottom: 20px;">
+          <div style="color: var(--text-muted); font-size: 14px; margin-bottom: 4px;">Duration</div>
+          <div style="color: var(--text-main); font-weight: 500; font-size: 18px;">{{ plan.duration_months }} Months</div>
+        </div>
+        <div style="margin-bottom: 20px;">
+          <div style="color: var(--text-muted); font-size: 14px; margin-bottom: 4px;">Price</div>
+          <div style="color: var(--text-main); font-weight: 500; font-size: 18px; color: var(--neon-orange);">${{ plan.price }}</div>
+        </div>
+        <div>
+          <div style="color: var(--text-muted); font-size: 14px; margin-bottom: 8px;">Features / Description</div>
+          <div style="color: var(--text-main); line-height: 1.6; background: var(--bg-card-hover); padding: 16px; border-radius: 8px; border: 1px solid var(--border);">
+            {{ plan.description|default:"No description provided."|linebreaks }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Subscriptions -->
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Members Currently Using This Plan</h3>
+      </div>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Member Name</th>
+            <th>Subscription Status</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for sub in plan.subscription_set.all %}
+            <tr>
+              <td>
+                <a href="{% url 'admin_member_detail' sub.member.id %}" style="font-weight: 500; color: var(--text-main); text-decoration: none;">
+                  {{ sub.member.first_name }} {{ sub.member.last_name }}
+                </a>
+              </td>
+              <td>
+                {% if sub.status == 'Active' %}
+                  <span class="status-badge status-active">Active</span>
+                {% elif sub.status == 'Expired' %}
+                  <span class="status-badge status-warning">Expired</span>
+                {% else %}
+                  <span class="status-badge status-danger">{{ sub.status }}</span>
+                {% endif %}
+              </td>
+              <td>{{ sub.start_date|date:"M d, Y" }}</td>
+              <td>{{ sub.end_date|date:"M d, Y" }}</td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="4" style="text-align: center; color: var(--text-muted);">No members are currently subscribed to this plan.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+{% endblock %}

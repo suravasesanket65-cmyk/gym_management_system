@@ -1,0 +1,100 @@
+{% extends 'core/admin/admin_base.html' %}
+
+{% block title %}Expenses{% endblock %}
+
+{% block admin_content %}
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Expenses</h1>
+      <p class="page-subtitle">Track gym expenses and payments</p>
+    </div>
+    <a href="{% url 'admin_expense_add' %}" class="btn btn-primary"><i class="fas fa-plus"></i> Record Expense</a>
+  </div>
+
+  <div class="card">
+    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+      <h3 class="card-title">Expense Log</h3>
+      <form method="GET" action="{% url 'admin_expenses' %}" style="display: flex; gap: 10px;">
+        <select name="category" style="padding: 8px; border-radius: 4px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-main);">
+          <option value="">All Categories</option>
+          {% for c in categories %}
+            <option value="{{ c }}" {% if current_category == c %}selected{% endif %}>{{ c }}</option>
+          {% endfor %}
+        </select>
+        <div class="search-box">
+          <i class="fas fa-search"></i>
+          <input type="text" name="q" value="{{ search_query }}" placeholder="Search description, reference...">
+        </div>
+        <button type="submit" class="btn btn-primary" style="padding: 6px 12px; border-radius: 4px;">Search</button>
+        {% if search_query or current_category %}
+          <a href="{% url 'admin_expenses' %}" class="btn btn-secondary" style="display: flex; align-items: center; justify-content: center; height: 100%; border-radius: 4px;">Clear</a>
+        {% endif %}
+      </form>
+    </div>
+    
+    {% if expenses %}
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Category & Desc</th>
+          <th>Amount</th>
+          <th>Method & Ref</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for ex in expenses %}
+        <tr>
+          <td>
+            <div style="font-weight: 500; color: var(--text-main);">{{ ex.expense_date|date:"M d, Y" }}</div>
+          </td>
+          <td>
+            <div style="font-weight: 500; color: var(--neon-orange);">{{ ex.category }}</div>
+            <div style="color: var(--text-muted); font-size: 13px; max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ ex.description }}</div>
+          </td>
+          <td>
+            <div style="font-weight: 600; color: var(--danger); font-size: 16px;">${{ ex.amount }}</div>
+          </td>
+          <td>
+            <div style="color: var(--text-main);">{{ ex.payment_method }}</div>
+            <div style="color: var(--text-muted); font-size: 12px;">Ref: {{ ex.reference|default:"None" }}</div>
+          </td>
+          <td>
+            <div style="display: flex; gap: 8px;">
+              <a href="{% url 'admin_expense_detail' ex.id %}" class="btn btn-secondary" style="padding: 6px 10px; font-size: 12px;"><i class="fas fa-eye"></i></a>
+              <a href="{% url 'admin_expense_edit' ex.id %}" class="btn btn-secondary" style="padding: 6px 10px; font-size: 12px;"><i class="fas fa-edit"></i></a>
+              <a href="{% url 'admin_expense_delete' ex.id %}" class="btn btn-secondary" style="padding: 6px 10px; font-size: 12px; color: var(--danger); border-color: var(--danger);"><i class="fas fa-trash"></i></a>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    
+    {% if is_paginated %}
+    <div style="padding: 16px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+      <div style="color: var(--text-muted); font-size: 14px;">
+        Showing page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+      </div>
+      <div style="display: flex; gap: 8px;">
+        {% if page_obj.has_previous %}
+          <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if current_category %}&category={{ current_category }}{% endif %}" class="btn btn-secondary" style="padding: 6px 12px;">Previous</a>
+        {% endif %}
+        {% if page_obj.has_next %}
+          <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if current_category %}&category={{ current_category }}{% endif %}" class="btn btn-secondary" style="padding: 6px 12px;">Next</a>
+        {% endif %}
+      </div>
+    </div>
+    {% endif %}
+    
+    {% else %}
+    <div class="empty-state">
+      <i class="fas fa-file-invoice-dollar"></i>
+      <h3>No expenses found</h3>
+      <p>Start recording your gym expenses.</p>
+      <a href="{% url 'admin_expense_add' %}" class="btn btn-primary" style="margin-top: 16px;"><i class="fas fa-plus"></i> Record Expense</a>
+    </div>
+    {% endif %}
+  </div>
+{% endblock %}

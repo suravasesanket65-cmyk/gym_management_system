@@ -1,0 +1,39 @@
+{% extends 'core/admin/admin_base.html' %}
+
+{% block title %}Delete Member{% endblock %}
+
+{% block admin_content %}
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Delete Member: {{ member.first_name }} {{ member.last_name }}</h1>
+      <p class="page-subtitle" style="color: var(--danger);">Are you sure you want to permanently delete this member?</p>
+    </div>
+  </div>
+
+  <div class="card" style="max-width: 600px; border-color: var(--danger);">
+    <div class="card-header" style="border-bottom-color: var(--danger);">
+      <h3 class="card-title" style="color: var(--danger);"><i class="fas fa-exclamation-triangle"></i> Warning: Permanent Action</h3>
+    </div>
+    <div style="padding: 24px;">
+      <p style="margin-bottom: 16px; line-height: 1.6; color: var(--text-main);">
+        You are about to delete <strong>{{ member.first_name }} {{ member.last_name }}</strong> ({{ member.email }}).
+      </p>
+      
+      <p style="margin-bottom: 24px; line-height: 1.6; color: var(--text-muted);">
+        This action will permanently remove this member's profile. Related historical records (payments, subscriptions, attendance) will be deleted due to foreign key constraints. 
+        <br><br>
+        <strong>It is highly recommended to set the member status to "Inactive" instead of deleting them.</strong>
+      </p>
+
+      <form method="POST">
+        {% csrf_token %}
+        <div style="display: flex; gap: 16px; align-items: center;">
+          <button type="submit" class="btn btn-primary" style="background-color: var(--danger); border-color: var(--danger);">
+            <i class="fas fa-trash"></i> Yes, Permanently Delete
+          </button>
+          <a href="{% url 'admin_members' %}" class="btn btn-secondary">Cancel and Return</a>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,114 @@
+{% extends 'core/admin/admin_base.html' %}
+
+{% block title %}Staff{% endblock %}
+
+{% block admin_content %}
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Staff Members</h1>
+      <p class="page-subtitle">Manage internal gym staff and administrators</p>
+    </div>
+    <a href="{% url 'admin_staff_add' %}" class="btn btn-primary"><i class="fas fa-plus"></i> Add Staff</a>
+  </div>
+
+  <div class="card">
+    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+      <h3 class="card-title">Staff List</h3>
+      <form method="GET" action="{% url 'admin_staff' %}" style="display: flex; gap: 10px;">
+        <select name="role" style="padding: 8px; border-radius: 4px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-main);">
+          <option value="">All Roles</option>
+          {% for r in roles %}
+            <option value="{{ r }}" {% if current_role == r %}selected{% endif %}>{{ r }}</option>
+          {% endfor %}
+        </select>
+        <select name="status" style="padding: 8px; border-radius: 4px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-main);">
+          <option value="">All Statuses</option>
+          {% for st in statuses %}
+            <option value="{{ st }}" {% if current_status == st %}selected{% endif %}>{{ st }}</option>
+          {% endfor %}
+        </select>
+        <div class="search-box">
+          <i class="fas fa-search"></i>
+          <input type="text" name="q" value="{{ search_query }}" placeholder="Search staff...">
+        </div>
+        <button type="submit" class="btn btn-primary" style="padding: 6px 12px; border-radius: 4px;">Search</button>
+        {% if search_query or current_status or current_role %}
+          <a href="{% url 'admin_staff' %}" class="btn btn-secondary" style="display: flex; align-items: center; justify-content: center; height: 100%; border-radius: 4px;">Clear</a>
+        {% endif %}
+      </form>
+    </div>
+    
+    {% if staff_members %}
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>User</th>
+          <th>Role</th>
+          <th>Contact</th>
+          <th>Joined</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for s in staff_members %}
+        <tr>
+          <td>
+            <div style="font-weight: 500; color: var(--text-main);">{{ s.user.first_name }} {{ s.user.last_name }}</div>
+            <div style="color: var(--text-muted); font-size: 12px;">{{ s.user.username }}</div>
+          </td>
+          <td>
+            <div style="font-weight: 500; color: var(--neon-orange);">{{ s.role }}</div>
+          </td>
+          <td>
+            <div style="color: var(--text-main); font-size: 13px;">{{ s.user.email }}</div>
+            <div style="color: var(--text-muted); font-size: 13px;">{{ s.phone }}</div>
+          </td>
+          <td>
+            <div style="color: var(--text-muted); font-size: 14px;">{{ s.joining_date|date:"M d, Y" }}</div>
+          </td>
+          <td>
+            {% if s.status == 'Active' %}
+              <span class="status-badge status-active">{{ s.status }}</span>
+            {% else %}
+              <span class="status-badge status-danger">{{ s.status }}</span>
+            {% endif %}
+          </td>
+          <td>
+            <div style="display: flex; gap: 8px;">
+              <a href="{% url 'admin_staff_detail' s.id %}" class="btn btn-secondary" style="padding: 6px 10px; font-size: 12px;"><i class="fas fa-eye"></i></a>
+              <a href="{% url 'admin_staff_edit' s.id %}" class="btn btn-secondary" style="padding: 6px 10px; font-size: 12px;"><i class="fas fa-edit"></i></a>
+              <a href="{% url 'admin_staff_delete' s.id %}" class="btn btn-secondary" style="padding: 6px 10px; font-size: 12px; color: var(--danger); border-color: var(--danger);"><i class="fas fa-trash"></i></a>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    
+    {% if is_paginated %}
+    <div style="padding: 16px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+      <div style="color: var(--text-muted); font-size: 14px;">
+        Showing page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+      </div>
+      <div style="display: flex; gap: 8px;">
+        {% if page_obj.has_previous %}
+          <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if current_status %}&status={{ current_status }}{% endif %}{% if current_role %}&role={{ current_role }}{% endif %}" class="btn btn-secondary" style="padding: 6px 12px;">Previous</a>
+        {% endif %}
+        {% if page_obj.has_next %}
+          <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if current_status %}&status={{ current_status }}{% endif %}{% if current_role %}&role={{ current_role }}{% endif %}" class="btn btn-secondary" style="padding: 6px 12px;">Next</a>
+        {% endif %}
+      </div>
+    </div>
+    {% endif %}
+    
+    {% else %}
+    <div class="empty-state">
+      <i class="fas fa-user-shield"></i>
+      <h3>No staff found</h3>
+      <p>Assign roles to your team members.</p>
+      <a href="{% url 'admin_staff_add' %}" class="btn btn-primary" style="margin-top: 16px;"><i class="fas fa-plus"></i> Add Staff</a>
+    </div>
+    {% endif %}
+  </div>
+{% endblock %}

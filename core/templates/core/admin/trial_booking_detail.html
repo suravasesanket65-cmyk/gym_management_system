@@ -1,0 +1,57 @@
+{% extends 'core/admin/admin_base.html' %}
+
+{% block title %}Trial Booking Details{% endblock %}
+
+{% block admin_content %}
+  <div class="page-header">
+    <div>
+      <a href="{% url 'admin_trial_bookings' %}" style="color: var(--text-muted); text-decoration: none; font-size: 14px; margin-bottom: 8px; display: inline-block;">
+        <i class="fas fa-arrow-left"></i> Back to Trial Bookings
+      </a>
+      <h1 class="page-title">Trial Booking Details</h1>
+    </div>
+    <div style="display: flex; gap: 12px;">
+      <a href="{% url 'admin_trial_booking_edit' object.id %}" class="btn btn-outline"><i class="fas fa-edit"></i> Edit</a>
+      <a href="{% url 'admin_trial_booking_delete' object.id %}" class="btn btn-outline text-danger" style="border-color: rgba(239, 68, 68, 0.3);"><i class="fas fa-trash"></i> Delete</a>
+    </div>
+  </div>
+
+  <div class="card" style="max-width: 800px;">
+    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+      <h3 class="card-title">{{ object.first_name }} {{ object.last_name }}</h3>
+      {% if object.status == 'New' %}
+        <span class="status-badge status-warning">{{ object.status }}</span>
+      {% elif object.status == 'Converted' %}
+        <span class="status-badge status-active">{{ object.status }}</span>
+      {% elif object.status == 'Cancelled' %}
+        <span class="status-badge status-danger">{{ object.status }}</span>
+      {% else %}
+        <span class="status-badge" style="background-color: rgba(59, 130, 246, 0.15); color: #3b82f6;">{{ object.status }}</span>
+      {% endif %}
+    </div>
+    
+    <div style="padding: 24px;">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+        <div>
+          <p style="color: var(--text-muted); font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Contact Information</p>
+          <p style="margin: 0 0 8px;"><strong>Email:</strong> {{ object.email }}</p>
+          <p style="margin: 0 0 8px;"><strong>Phone:</strong> {{ object.phone }}</p>
+        </div>
+        <div>
+          <p style="color: var(--text-muted); font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Booking Information</p>
+          <p style="margin: 0 0 8px;"><strong>Program:</strong> {{ object.program|default:"Not specified" }}</p>
+          <p style="margin: 0 0 8px;"><strong>Submitted On:</strong> {{ object.created_at|date:"M d, Y H:i" }}</p>
+        </div>
+      </div>
+      
+      {% if object.message %}
+      <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border);">
+        <p style="color: var(--text-muted); font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Message from Visitor</p>
+        <div style="background-color: var(--bg-card-hover); padding: 16px; border-radius: 8px;">
+          <p style="margin: 0; white-space: pre-line;">{{ object.message }}</p>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

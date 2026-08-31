@@ -1,0 +1,37 @@
+{% extends 'core/admin/admin_base.html' %}
+
+{% block title %}Delete Diet Plan{% endblock %}
+
+{% block admin_content %}
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Delete Diet Plan: {{ diet_plan.name }}</h1>
+      <p class="page-subtitle" style="color: var(--danger);">Are you sure you want to permanently delete this diet plan?</p>
+    </div>
+  </div>
+
+  <div class="card" style="max-width: 600px; border-color: var(--danger);">
+    <div class="card-header" style="border-bottom-color: var(--danger);">
+      <h3 class="card-title" style="color: var(--danger);"><i class="fas fa-exclamation-triangle"></i> Warning: Permanent Action</h3>
+    </div>
+    <div style="padding: 24px;">
+      <p style="margin-bottom: 16px; line-height: 1.6; color: var(--text-main);">
+        You are about to delete the diet plan <strong>{{ diet_plan.name }}</strong> for member {{ diet_plan.member.first_name }} {{ diet_plan.member.last_name }}.
+      </p>
+      
+      <p style="margin-bottom: 24px; line-height: 1.6; color: var(--text-muted);">
+        Deleting this plan will permanently remove it from the system AND it will cascade and delete all associated DietMeal records.
+      </p>
+
+      <form method="POST">
+        {% csrf_token %}
+        <div style="display: flex; gap: 16px; align-items: center;">
+          <button type="submit" class="btn btn-primary" style="background-color: var(--danger); border-color: var(--danger);">
+            <i class="fas fa-trash"></i> Yes, Permanently Delete
+          </button>
+          <a href="{% url 'admin_diet_plans' %}" class="btn btn-secondary">Cancel and Return</a>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}

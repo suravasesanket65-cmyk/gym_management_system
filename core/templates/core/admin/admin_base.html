@@ -1,0 +1,608 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CORESA Admin | {% block title %}Dashboard{% endblock %}</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Anton&family=Work+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap"
+    rel="stylesheet">
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <style>
+    :root {
+      /* CORESA Brand Theme */
+      --bg-dark: #0B0B0C;
+      --bg-card: #161619;
+      --bg-card-hover: #1E1E22;
+      --steel: #24282D;
+      --text-main: #FFFFFF;
+      --text-muted: #9E9E9E;
+      --text-dim: #C9C6BD;
+      --neon-orange: #FF4B1F;
+      --neon-orange-soft: rgba(255, 75, 31, 0.15);
+      --border: rgba(255, 255, 255, 0.08);
+      --success: #10B981;
+      --warning: #F59E0B;
+      --danger: #EF4444;
+
+      --sidebar-width: 260px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: 'Work Sans', sans-serif;
+      display: flex;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* typography */
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+    }
+
+    /* --- SIDEBAR --- */
+    .sidebar {
+      width: var(--sidebar-width);
+      background-color: var(--bg-card);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 100;
+      transition: transform 0.3s ease;
+      overflow-y: auto;
+    }
+
+    /* Scrollbar styling for sidebar */
+    .sidebar::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .sidebar::-webkit-scrollbar-thumb {
+      background: var(--steel);
+      border-radius: 4px;
+    }
+
+    .brand {
+      padding: 24px;
+      font-family: 'Anton', sans-serif;
+      font-size: 28px;
+      color: var(--text-main);
+      text-decoration: none;
+      letter-spacing: 1px;
+      position: sticky;
+      top: 0;
+      background-color: var(--bg-card);
+      z-index: 2;
+    }
+
+    .brand span {
+      color: var(--neon-orange);
+    }
+
+    .nav-section {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--text-muted);
+      margin: 20px 24px 10px;
+      font-weight: 600;
+    }
+
+    .nav-menu {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding: 0 16px 20px;
+    }
+
+    .nav-item a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 16px;
+      color: var(--text-dim);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .nav-item a:hover {
+      color: var(--text-main);
+      background-color: var(--bg-card-hover);
+    }
+
+    .nav-item.active a {
+      background-color: var(--neon-orange-soft);
+      color: var(--neon-orange);
+    }
+
+    .nav-item i {
+      width: 20px;
+      text-align: center;
+      font-size: 16px;
+    }
+
+    /* --- MAIN CONTENT --- */
+    .main-content {
+      margin-left: var(--sidebar-width);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* --- HEADER --- */
+    .top-header {
+      height: 80px;
+      background-color: var(--bg-dark);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      position: sticky;
+      top: 0;
+      z-index: 90;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .mobile-toggle {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--text-main);
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    .search-box {
+      position: relative;
+      width: 320px;
+    }
+
+    .search-box i {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+    }
+
+    .search-box input {
+      width: 100%;
+      background-color: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 10px 16px 10px 44px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .search-box input:focus {
+      border-color: var(--neon-orange);
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .icon-btn {
+      position: relative;
+      background: none;
+      border: none;
+      color: var(--text-dim);
+      font-size: 20px;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .icon-btn:hover {
+      color: var(--neon-orange);
+    }
+
+    .badge {
+      position: absolute;
+      top: -4px;
+      right: -6px;
+      background-color: var(--neon-orange);
+      color: #000;
+      font-size: 10px;
+      font-weight: 800;
+      width: 16px;
+      height: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+    }
+
+    .admin-profile {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      padding-left: 24px;
+      border-left: 1px solid var(--border);
+    }
+
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background-color: var(--steel);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .admin-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .admin-name {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .admin-role {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* --- CONTENT AREA --- */
+    .content-wrapper {
+      padding: 40px;
+      flex: 1;
+    }
+
+    /* REUSABLE UI COMPONENTS */
+
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+    }
+
+    .page-title {
+      font-size: 28px;
+      margin-bottom: 4px;
+    }
+
+    .page-subtitle {
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+      font-family: inherit;
+      border: 1px solid transparent;
+    }
+
+    .btn-primary {
+      background-color: var(--neon-orange);
+      color: #000;
+    }
+
+    .btn-primary:hover {
+      background-color: #ff6238;
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background-color: var(--bg-card);
+      border-color: var(--border);
+      color: var(--text-main);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--neon-orange);
+      color: var(--neon-orange);
+    }
+
+    .card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    .data-table th {
+      padding: 16px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+      font-weight: 600;
+    }
+
+    .data-table td {
+      padding: 16px;
+      font-size: 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+      color: var(--text-dim);
+    }
+
+    .data-table tbody tr:hover td {
+      background-color: rgba(255, 255, 255, 0.01);
+      color: var(--text-main);
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .status-active {
+      background-color: rgba(16, 185, 129, 0.15);
+      color: var(--success);
+    }
+
+    .status-warning {
+      background-color: rgba(245, 158, 11, 0.15);
+      color: var(--warning);
+    }
+
+    .status-danger {
+      background-color: rgba(239, 68, 68, 0.15);
+      color: var(--danger);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-muted);
+    }
+
+    .empty-state i {
+      font-size: 48px;
+      color: var(--steel);
+      margin-bottom: 16px;
+    }
+
+    .empty-state h3 {
+      font-size: 18px;
+      color: var(--text-main);
+      margin-bottom: 8px;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 1024px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .main-content {
+        margin-left: 0;
+      }
+
+      .mobile-toggle {
+        display: block;
+      }
+
+      .search-box {
+        display: none;
+      }
+
+      .content-wrapper {
+        padding: 24px;
+      }
+
+      .top-header {
+        padding: 0 24px;
+      }
+    }
+  </style>
+  {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+
+  <!-- ADMIN SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <a href="{% url 'dashboard' %}" class="brand">CORE<span>SA</span></a>
+
+    <div class="nav-section">Overview</div>
+    <ul class="nav-menu">
+      <li class="nav-item {% if request.resolver_match.url_name == 'admin_home' %}active{% endif %}">
+        <a href="{% url 'dashboard' %}"><i class="fas fa-th-large"></i> Dashboard</a>
+      </li>
+    </ul>
+
+    <div class="nav-section">Core Operations</div>
+    <ul class="nav-menu">
+      <li class="nav-item {% if request.resolver_match.url_name == 'admin_members' %}active{% endif %}">
+        <a href="{% url 'admin_members' %}"><i class="fas fa-users"></i> Members</a>
+      </li>
+      <li class="nav-item {% if request.resolver_match.url_name == 'admin_trainers' %}active{% endif %}">
+        <a href="{% url 'admin_trainers' %}"><i class="fas fa-user-tie"></i> Trainers</a>
+      </li>
+      <li class="nav-item {% if request.resolver_match.url_name == 'admin_plans' %}active{% endif %}">
+        <a href="{% url 'admin_plans' %}"><i class="fas fa-id-card"></i> Membership Plans</a>
+      </li>
+      <li class="nav-item {% if request.resolver_match.url_name == 'admin_classes' %}active{% endif %}">
+        <a href="{% url 'admin_classes' %}"><i class="fas fa-dumbbell"></i> Classes</a>
+      </li>
+    </ul>
+
+    <div class="nav-section">Engagement</div>
+    <ul class="nav-menu">
+      <li class="nav-item {% if request.resolver_match.url_name == 'admin_attendance' %}active{% endif %}">
+        <a href="{% url 'admin_attendance' %}"><i class="fas fa-clipboard-check"></i> Attendance</a>
+      </li>
+      <li class="nav-item {% if request.resolver_match.url_name == 'admin_workouts' %}active{% endif %}">
+        <a href="{% url 'admin_workouts' %}"><i class="fas fa-running"></i> Workouts</a>
+      </li>
+      <li class="nav-item {% if request.resolver_match.url_name == 'admin_diet_plans' %}active{% endif %}">
+        <a href="{% url 'admin_diet_plans' %}"><i class="fas fa-apple-alt"></i> Diet Plans</a>
+      </li>
+      <li class="nav-item {% if request.resolver_match.url_name == 'admin_appointments' %}active{% endif %}">
+        <a href="{% url 'admin_appointments' %}"><i class="far fa-calendar-alt"></i> Appointments</a>
+      </li>
+    </ul>
+
+    <div class="nav-section">Business</div>
+    <ul class="nav-menu">
+      <li class="nav-item {% if request.resolver_match.url_name == 'admin_payments' %}active{% endif %}">
+        <a href="{% url 'admin_payments' %}"><i class="fas fa-credit-card"></i> Payments</a>
+      </li>
+      <li class="nav-item {% if request.resolver_match.url_name == 'admin_trial_bookings' %}active{% endif %}">
+        <a href="{% url 'admin_trial_bookings' %}"><i class="fas fa-inbox"></i> Trial Bookings</a>
+      </li>
+      <li class="nav-item {% if request.resolver_match.url_name == 'admin_inventory' %}active{% endif %}">
+        <a href="{% url 'admin_inventory' %}"><i class="fas fa-box"></i> Inventory</a>
+      </li>
+      <li class="nav-item {% if request.resolver_match.url_name == 'admin_expenses' %}active{% endif %}">
+        <a href="{% url 'admin_expenses' %}"><i class="fas fa-file-invoice-dollar"></i> Expenses</a>
+      </li>
+    </ul>
+
+    <div class="nav-section">Administration</div>
+    <ul class="nav-menu">
+      <li class="nav-item {% if request.resolver_match.url_name == 'admin_staff' %}active{% endif %}">
+        <a href="{% url 'admin_staff' %}"><i class="fas fa-user-shield"></i> Staff</a>
+      </li>
+      <li class="nav-item {% if request.resolver_match.url_name == 'admin_reports' %}active{% endif %}">
+        <a href="{% url 'admin_reports' %}"><i class="fas fa-chart-line"></i> Reports & Analytics</a>
+      </li>
+      <li class="nav-item {% if request.resolver_match.url_name == 'admin_notifications' %}active{% endif %}">
+        <a href="{% url 'admin_notifications' %}"><i class="fas fa-bell"></i> Notifications</a>
+      </li>
+      <li class="nav-item {% if request.resolver_match.url_name == 'admin_settings' %}active{% endif %}">
+        <a href="{% url 'admin_settings' %}"><i class="fas fa-cog"></i> Settings</a>
+      </li>
+      <li class="nav-item" style="margin-top: 10px;">
+        <a href="{% url 'home' %}"><i class="fas fa-sign-out-alt"></i> Log Out</a>
+      </li>
+    </ul>
+  </aside>
+
+  <!-- MAIN WRAPPER -->
+  <main class="main-content">
+
+    <!-- TOP HEADER -->
+    <header class="top-header">
+      <div class="header-left">
+        <button class="mobile-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">
+          <i class="fas fa-bars"></i>
+        </button>
+        <div class="search-box">
+          <i class="fas fa-search"></i>
+          <input type="text" placeholder="Global search... (Members, Trainers, Plans)">
+        </div>
+      </div>
+
+      <div class="header-right">
+        <button class="icon-btn">
+          <i class="far fa-envelope"></i>
+        </button>
+        <button class="icon-btn" onclick="window.location.href=`{% url 'admin_notifications' %}`">
+          <i class="far fa-bell"></i>
+          {% if unread_notifications_count > 0 %}
+          <span class="badge">{{ unread_notifications_count }}</span>
+          {% endif %}
+        </button>
+        <div class="admin-profile">
+          <div class="admin-info">
+            <span class="admin-name">{{ request.user.get_full_name|default:request.user.username }}</span>
+            <span class="admin-role">Super Administrator</span>
+          </div>
+          <div class="avatar">{{ request.user.username|make_list|first|upper }}</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- PAGE CONTENT -->
+    <div class="content-wrapper">
+      {% block admin_content %}{% endblock %}
+    </div>
+
+  </main>
+
+  {% block extra_js %}{% endblock %}
+</body>
+
+</html>

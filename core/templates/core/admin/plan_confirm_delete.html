@@ -1,0 +1,52 @@
+{% extends 'core/admin/admin_base.html' %}
+
+{% block title %}Delete Membership Plan{% endblock %}
+
+{% block admin_content %}
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Delete Plan: {{ plan.plan_name }}</h1>
+      <p class="page-subtitle" style="color: var(--danger);">Are you sure you want to permanently delete this membership plan?</p>
+    </div>
+  </div>
+
+  <div class="card" style="max-width: 600px; border-color: var(--danger);">
+    <div class="card-header" style="border-bottom-color: var(--danger);">
+      <h3 class="card-title" style="color: var(--danger);"><i class="fas fa-exclamation-triangle"></i> Warning: Permanent Action</h3>
+    </div>
+    <div style="padding: 24px;">
+      <p style="margin-bottom: 16px; line-height: 1.6; color: var(--text-main);">
+        You are about to delete the <strong>{{ plan.plan_name }}</strong> plan (${{ plan.price }}).
+      </p>
+
+      {% if plan.subscription_set.exists %}
+        <div style="padding: 16px; background-color: rgba(255, 75, 31, 0.1); border-left: 4px solid var(--danger); margin-bottom: 24px;">
+          <h4 style="color: var(--danger); margin-top: 0; margin-bottom: 8px;">Critical Error: Cannot Delete</h4>
+          <p style="color: var(--text-main); margin: 0; line-height: 1.5; font-size: 14px;">
+            This plan is currently linked to <strong>{{ plan.subscription_set.count }} subscription(s)</strong>. 
+            Because the MembershipPlan model does not support an "inactive" status, deleting this plan would cascade and permanently delete all associated historical subscriptions and payment records. 
+            <br><br>
+            Please remove all associated subscriptions before attempting to delete this plan.
+          </p>
+        </div>
+        <div style="display: flex; gap: 16px; align-items: center;">
+          <a href="{% url 'admin_plan_detail' plan.id %}" class="btn btn-primary">Return to Plan</a>
+        </div>
+      {% else %}
+        <p style="margin-bottom: 24px; line-height: 1.6; color: var(--text-muted);">
+          This plan is not linked to any active or historical subscriptions. It is safe to delete.
+        </p>
+
+        <form method="POST">
+          {% csrf_token %}
+          <div style="display: flex; gap: 16px; align-items: center;">
+            <button type="submit" class="btn btn-primary" style="background-color: var(--danger); border-color: var(--danger);">
+              <i class="fas fa-trash"></i> Yes, Permanently Delete
+            </button>
+            <a href="{% url 'admin_plans' %}" class="btn btn-secondary">Cancel and Return</a>
+          </div>
+        </form>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

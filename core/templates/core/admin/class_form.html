@@ -1,0 +1,72 @@
+{% extends 'core/admin/admin_base.html' %}
+
+{% block title %}{% if object %}Edit Class{% else %}Add Class{% endif %}{% endblock %}
+
+{% block admin_content %}
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">{% if object %}Edit Class: {{ object.class_name }}{% else %}Add New Class Schedule{% endif %}</h1>
+      <p class="page-subtitle">Configure the class schedule below.</p>
+    </div>
+    <a href="{% url 'admin_classes' %}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back to List</a>
+  </div>
+
+  <div class="card" style="max-width: 800px;">
+    <div class="card-header">
+      <h3 class="card-title">Class Information</h3>
+    </div>
+    <div style="padding: 24px;">
+      <form method="POST">
+        {% csrf_token %}
+        
+        <div style="margin-bottom: 20px;">
+          <label style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px; color: var(--text-main);">Class Name</label>
+          {{ form.class_name }}
+          {% if form.class_name.errors %}<div style="color: var(--danger); font-size: 12px; margin-top: 4px;">{{ form.class_name.errors }}</div>{% endif %}
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+          <div>
+            <label style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px; color: var(--text-main);">Program</label>
+            {{ form.program }}
+            {% if form.program.errors %}<div style="color: var(--danger); font-size: 12px; margin-top: 4px;">{{ form.program.errors }}</div>{% endif %}
+          </div>
+          <div>
+            <label style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px; color: var(--text-main);">Trainer</label>
+            {{ form.trainer }}
+            {% if form.trainer.errors %}<div style="color: var(--danger); font-size: 12px; margin-top: 4px;">{{ form.trainer.errors }}</div>{% endif %}
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-bottom: 30px;">
+          <div>
+            <label style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px; color: var(--text-main);">Day of Week</label>
+            {{ form.day_of_week }}
+            {% if form.day_of_week.errors %}<div style="color: var(--danger); font-size: 12px; margin-top: 4px;">{{ form.day_of_week.errors }}</div>{% endif %}
+          </div>
+          <div>
+            <label style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px; color: var(--text-main);">Start Time</label>
+            {{ form.start_time }}
+            {% if form.start_time.errors %}<div style="color: var(--danger); font-size: 12px; margin-top: 4px;">{{ form.start_time.errors }}</div>{% endif %}
+          </div>
+          <div>
+            <label style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px; color: var(--text-main);">End Time</label>
+            {{ form.end_time }}
+            {% if form.end_time.errors %}<div style="color: var(--danger); font-size: 12px; margin-top: 4px;">{{ form.end_time.errors }}</div>{% endif %}
+          </div>
+        </div>
+        
+        <div style="margin-bottom: 30px;">
+          <label style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px; color: var(--text-main);">Max Capacity</label>
+          {{ form.max_capacity }}
+          {% if form.max_capacity.errors %}<div style="color: var(--danger); font-size: 12px; margin-top: 4px;">{{ form.max_capacity.errors }}</div>{% endif %}
+        </div>
+
+        <div style="display: flex; gap: 12px;">
+          <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Class</button>
+          <a href="{% url 'admin_classes' %}" class="btn btn-secondary">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}

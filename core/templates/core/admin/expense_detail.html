@@ -1,0 +1,49 @@
+{% extends 'core/admin/admin_base.html' %}
+
+{% block title %}Expense Details{% endblock %}
+
+{% block admin_content %}
+  <div class="page-header" style="display: flex; justify-content: space-between; align-items: flex-start;">
+    <div>
+      <h1 class="page-title">{{ expense.category }} Expense</h1>
+      <p class="page-subtitle" style="color: var(--text-muted); font-size: 16px;">{{ expense.expense_date|date:"M d, Y" }}</p>
+    </div>
+    <div style="display: flex; gap: 10px;">
+      <a href="{% url 'admin_expense_edit' expense.id %}" class="btn btn-primary"><i class="fas fa-edit"></i> Edit Expense</a>
+      <a href="{% url 'admin_expenses' %}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back</a>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom: 24px;">
+    <div class="card-header">
+      <h3 class="card-title">Overview</h3>
+    </div>
+    <div style="padding: 24px;">
+      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-bottom: 20px;">
+        <div>
+          <div style="color: var(--text-muted); font-size: 14px; margin-bottom: 4px;">Amount</div>
+          <div style="color: var(--danger); font-weight: 600; font-size: 24px;">${{ expense.amount }}</div>
+        </div>
+        <div>
+          <div style="color: var(--text-muted); font-size: 14px; margin-bottom: 4px;">Payment Method</div>
+          <div style="color: var(--text-main); font-weight: 500; font-size: 16px;">{{ expense.payment_method }}</div>
+        </div>
+        <div>
+          <div style="color: var(--text-muted); font-size: 14px; margin-bottom: 4px;">Reference</div>
+          <div style="color: var(--text-main); font-weight: 500; font-size: 16px;">{{ expense.reference|default:"N/A" }}</div>
+        </div>
+        <div>
+          <div style="color: var(--text-muted); font-size: 14px; margin-bottom: 4px;">Recorded By</div>
+          <div style="color: var(--text-main); font-weight: 500; font-size: 16px;">{{ expense.recorded_by.username }}</div>
+        </div>
+      </div>
+      
+      {% if expense.description %}
+      <div style="margin-top: 20px;">
+        <div style="color: var(--text-muted); font-size: 14px; margin-bottom: 4px;">Description</div>
+        <div style="color: var(--text-main); font-size: 15px; background: rgba(255,255,255,0.02); padding: 16px; border-radius: 8px;">{{ expense.description }}</div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

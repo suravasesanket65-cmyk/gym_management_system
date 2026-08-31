@@ -1,0 +1,113 @@
+from django.urls import path
+from core.views import AdminProtectedTemplateView, DashboardHomeView
+from core.admin_views import (
+    MemberListView, MemberCreateView, MemberUpdateView, MemberDetailView, MemberDeleteView,
+    TrainerListView, TrainerCreateView, TrainerUpdateView, TrainerDetailView, TrainerDeleteView,
+    TrainerListView, TrainerCreateView, TrainerUpdateView, TrainerDetailView, TrainerDeleteView,
+    MembershipPlanListView, MembershipPlanCreateView, MembershipPlanUpdateView, MembershipPlanDetailView, MembershipPlanDeleteView,
+    ClassScheduleListView, ClassScheduleCreateView, ClassScheduleUpdateView, ClassScheduleDetailView, ClassScheduleDeleteView,
+    AttendanceListView, AttendanceCreateView, AttendanceUpdateView, AttendanceDetailView, AttendanceDeleteView,
+    WorkoutPlanListView, WorkoutPlanCreateView, WorkoutPlanUpdateView, WorkoutPlanDetailView, WorkoutPlanDeleteView,
+    WorkoutExerciseCreateView, WorkoutExerciseUpdateView, WorkoutExerciseDeleteView,
+
+    DietPlanListView, DietPlanCreateView, DietPlanUpdateView, DietPlanDetailView, DietPlanDeleteView,
+    DietMealCreateView, DietMealUpdateView, DietMealDeleteView,
+    AppointmentListView, AppointmentCreateView, AppointmentUpdateView, AppointmentDetailView, AppointmentDeleteView,
+    InventoryListView, InventoryCreateView, InventoryUpdateView, InventoryDetailView, InventoryDeleteView,
+    ExpenseListView, ExpenseCreateView, ExpenseUpdateView, ExpenseDetailView, ExpenseDeleteView,
+    StaffListView, StaffCreateView, StaffUpdateView, StaffDetailView, StaffDeleteView,
+    StaffListView, StaffCreateView, StaffUpdateView, StaffDetailView, StaffDeleteView,
+    NotificationListView, NotificationCreateView, NotificationUpdateView, NotificationDetailView, NotificationDeleteView, NotificationReadView,
+    ReportsDashboardView, TrialBookingListView, TrialBookingCreateView, TrialBookingUpdateView, TrialBookingDetailView, TrialBookingDeleteView
+)
+
+urlpatterns = [
+    path('', DashboardHomeView.as_view(), name='dashboard'),
+    path('members/', MemberListView.as_view(), name='admin_members'),
+    path('members/add/', MemberCreateView.as_view(), name='admin_member_add'),
+    path('members/<int:pk>/', MemberDetailView.as_view(), name='admin_member_detail'),
+    path('members/<int:pk>/edit/', MemberUpdateView.as_view(), name='admin_member_edit'),
+    path('members/<int:pk>/delete/', MemberDeleteView.as_view(), name='admin_member_delete'),
+    path('trainers/', TrainerListView.as_view(), name='admin_trainers'),
+    path('trainers/add/', TrainerCreateView.as_view(), name='admin_trainer_add'),
+    path('trainers/<int:pk>/', TrainerDetailView.as_view(), name='admin_trainer_detail'),
+    path('trainers/<int:pk>/edit/', TrainerUpdateView.as_view(), name='admin_trainer_edit'),
+    path('trainers/<int:pk>/delete/', TrainerDeleteView.as_view(), name='admin_trainer_delete'),
+    path('plans/', MembershipPlanListView.as_view(), name='admin_plans'),
+    path('plans/add/', MembershipPlanCreateView.as_view(), name='admin_plan_add'),
+    path('plans/<int:pk>/', MembershipPlanDetailView.as_view(), name='admin_plan_detail'),
+    path('plans/<int:pk>/edit/', MembershipPlanUpdateView.as_view(), name='admin_plan_edit'),
+    path('plans/<int:pk>/delete/', MembershipPlanDeleteView.as_view(), name='admin_plan_delete'),
+    path('payments/', AdminProtectedTemplateView.as_view(template_name='core/admin/payments.html'), name='admin_payments'),
+    path('attendance/', AttendanceListView.as_view(), name='admin_attendance'),
+    path('attendance/add/', AttendanceCreateView.as_view(), name='admin_attendance_add'),
+    path('attendance/<int:pk>/', AttendanceDetailView.as_view(), name='admin_attendance_detail'),
+    path('attendance/<int:pk>/edit/', AttendanceUpdateView.as_view(), name='admin_attendance_edit'),
+    path('attendance/<int:pk>/delete/', AttendanceDeleteView.as_view(), name='admin_attendance_delete'),
+    
+    path('workouts/', WorkoutPlanListView.as_view(), name='admin_workouts'),
+    path('workouts/add/', WorkoutPlanCreateView.as_view(), name='admin_workout_add'),
+    path('workouts/<int:pk>/', WorkoutPlanDetailView.as_view(), name='admin_workout_detail'),
+    path('workouts/<int:pk>/edit/', WorkoutPlanUpdateView.as_view(), name='admin_workout_edit'),
+    path('workouts/<int:pk>/delete/', WorkoutPlanDeleteView.as_view(), name='admin_workout_delete'),
+    
+    path('workouts/<int:workout_pk>/exercises/add/', WorkoutExerciseCreateView.as_view(), name='admin_workout_exercise_add'),
+    path('workouts/<int:workout_pk>/exercises/<int:pk>/edit/', WorkoutExerciseUpdateView.as_view(), name='admin_workout_exercise_edit'),
+    path('workouts/<int:workout_pk>/exercises/<int:pk>/delete/', WorkoutExerciseDeleteView.as_view(), name='admin_workout_exercise_delete'),
+    
+    path('diet-plans/', DietPlanListView.as_view(), name='admin_diet_plans'),
+    path('diet-plans/add/', DietPlanCreateView.as_view(), name='admin_diet_plan_add'),
+    path('diet-plans/<int:pk>/', DietPlanDetailView.as_view(), name='admin_diet_plan_detail'),
+    path('diet-plans/<int:pk>/edit/', DietPlanUpdateView.as_view(), name='admin_diet_plan_edit'),
+    path('diet-plans/<int:pk>/delete/', DietPlanDeleteView.as_view(), name='admin_diet_plan_delete'),
+
+    path('diet-plans/<int:plan_pk>/meals/add/', DietMealCreateView.as_view(), name='admin_diet_meal_add'),
+    path('diet-plans/<int:plan_pk>/meals/<int:pk>/edit/', DietMealUpdateView.as_view(), name='admin_diet_meal_edit'),
+    path('diet-plans/<int:plan_pk>/meals/<int:pk>/delete/', DietMealDeleteView.as_view(), name='admin_diet_meal_delete'),
+    
+    path('appointments/', AppointmentListView.as_view(), name='admin_appointments'),
+    path('appointments/add/', AppointmentCreateView.as_view(), name='admin_appointment_add'),
+    path('appointments/<int:pk>/', AppointmentDetailView.as_view(), name='admin_appointment_detail'),
+    path('appointments/<int:pk>/edit/', AppointmentUpdateView.as_view(), name='admin_appointment_edit'),
+    path('appointments/<int:pk>/delete/', AppointmentDeleteView.as_view(), name='admin_appointment_delete'),
+
+    path('inventory/', InventoryListView.as_view(), name='admin_inventory'),
+    path('inventory/add/', InventoryCreateView.as_view(), name='admin_inventory_add'),
+    path('inventory/<int:pk>/', InventoryDetailView.as_view(), name='admin_inventory_detail'),
+    path('inventory/<int:pk>/edit/', InventoryUpdateView.as_view(), name='admin_inventory_edit'),
+    path('inventory/<int:pk>/delete/', InventoryDeleteView.as_view(), name='admin_inventory_delete'),
+
+    path('expenses/', ExpenseListView.as_view(), name='admin_expenses'),
+    path('expenses/add/', ExpenseCreateView.as_view(), name='admin_expense_add'),
+    path('expenses/<int:pk>/', ExpenseDetailView.as_view(), name='admin_expense_detail'),
+    path('expenses/<int:pk>/edit/', ExpenseUpdateView.as_view(), name='admin_expense_edit'),
+    path('expenses/<int:pk>/delete/', ExpenseDeleteView.as_view(), name='admin_expense_delete'),
+
+    path('staff/', StaffListView.as_view(), name='admin_staff'),
+    path('staff/add/', StaffCreateView.as_view(), name='admin_staff_add'),
+    path('staff/<int:pk>/', StaffDetailView.as_view(), name='admin_staff_detail'),
+    path('staff/<int:pk>/edit/', StaffUpdateView.as_view(), name='admin_staff_edit'),
+    path('staff/<int:pk>/delete/', StaffDeleteView.as_view(), name='admin_staff_delete'),
+    
+    path('trial-bookings/', TrialBookingListView.as_view(), name='admin_trial_bookings'),
+    path('trial-bookings/add/', TrialBookingCreateView.as_view(), name='admin_trial_booking_add'),
+    path('trial-bookings/<int:pk>/', TrialBookingDetailView.as_view(), name='admin_trial_booking_detail'),
+    path('trial-bookings/<int:pk>/edit/', TrialBookingUpdateView.as_view(), name='admin_trial_booking_edit'),
+    path('trial-bookings/<int:pk>/delete/', TrialBookingDeleteView.as_view(), name='admin_trial_booking_delete'),
+
+    path('classes/', ClassScheduleListView.as_view(), name='admin_classes'),
+    path('classes/add/', ClassScheduleCreateView.as_view(), name='admin_class_add'),
+    path('classes/<int:pk>/', ClassScheduleDetailView.as_view(), name='admin_class_detail'),
+    path('classes/<int:pk>/edit/', ClassScheduleUpdateView.as_view(), name='admin_class_edit'),
+    path('classes/<int:pk>/delete/', ClassScheduleDeleteView.as_view(), name='admin_class_delete'),
+    
+    path('notifications/', NotificationListView.as_view(), name='admin_notifications'),
+    path('notifications/add/', NotificationCreateView.as_view(), name='admin_notification_add'),
+    path('notifications/<int:pk>/', NotificationDetailView.as_view(), name='admin_notification_detail'),
+    path('notifications/<int:pk>/edit/', NotificationUpdateView.as_view(), name='admin_notification_edit'),
+    path('notifications/<int:pk>/delete/', NotificationDeleteView.as_view(), name='admin_notification_delete'),
+    path('notifications/<int:pk>/read/', NotificationReadView.as_view(), name='admin_notification_read'),
+
+    path('reports/', ReportsDashboardView.as_view(), name='admin_reports'),
+    path('settings/', AdminProtectedTemplateView.as_view(template_name='core/admin/settings.html'), name='admin_settings'),
+]

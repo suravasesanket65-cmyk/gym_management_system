@@ -1,0 +1,116 @@
+{% extends 'core/admin/admin_base.html' %}
+
+{% block title %}Notifications{% endblock %}
+
+{% block admin_content %}
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Notifications</h1>
+      <p class="page-subtitle">Manage and send system notifications</p>
+    </div>
+    <a href="{% url 'admin_notification_add' %}" class="btn btn-primary"><i class="fas fa-plus"></i> Send Notification</a>
+  </div>
+
+  <div class="card">
+    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+      <h3 class="card-title">Notification Log</h3>
+      <form method="GET" action="{% url 'admin_notifications' %}" style="display: flex; gap: 10px;">
+        <select name="type" style="padding: 8px; border-radius: 4px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-main);">
+          <option value="">All Types</option>
+          {% for t in types %}
+            <option value="{{ t }}" {% if current_type == t %}selected{% endif %}>{{ t }}</option>
+          {% endfor %}
+        </select>
+        <select name="is_read" style="padding: 8px; border-radius: 4px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-main);">
+          <option value="">All Statuses</option>
+          <option value="false" {% if current_is_read == 'false' %}selected{% endif %}>Unread</option>
+          <option value="true" {% if current_is_read == 'true' %}selected{% endif %}>Read</option>
+        </select>
+        <div class="search-box">
+          <i class="fas fa-search"></i>
+          <input type="text" name="q" value="{{ search_query }}" placeholder="Search title, message, recipient...">
+        </div>
+        <button type="submit" class="btn btn-primary" style="padding: 6px 12px; border-radius: 4px;">Search</button>
+        {% if search_query or current_type or current_is_read %}
+          <a href="{% url 'admin_notifications' %}" class="btn btn-secondary" style="display: flex; align-items: center; justify-content: center; height: 100%; border-radius: 4px;">Clear</a>
+        {% endif %}
+      </form>
+    </div>
+    
+    {% if notifications %}
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Recipient</th>
+          <th>Notification</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for notif in notifications %}
+        <tr>
+          <td>
+            <div style="font-weight: 500; color: var(--text-main);">{{ notif.created_at|date:"M d, Y" }}</div>
+            <div style="color: var(--text-muted); font-size: 12px;">{{ notif.created_at|time:"h:i A" }}</div>
+          </td>
+          <td>
+            <div style="font-weight: 500; color: var(--text-main);">{{ notif.recipient.username }}</div>
+            <div style="color: var(--text-muted); font-size: 12px;">{{ notif.recipient.email }}</div>
+          </td>
+          <td>
+            <div style="font-weight: 500; color: var(--neon-orange);">{{ notif.title }} <span style="font-size: 11px; background: rgba(255, 255, 255, 0.1); padding: 2px 6px; border-radius: 4px; margin-left: 4px; color: var(--text-muted);">{{ notif.notification_type }}</span></div>
+            <div style="color: var(--text-muted); font-size: 13px; max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ notif.message }}</div>
+          </td>
+          <td>
+            {% if notif.is_read %}
+              <span class="status-badge status-active">Read</span>
+            {% else %}
+              <span class="status-badge status-warning">Unread</span>
+            {% endif %}
+          </td>
+          <td>
+            <div style="display: flex; gap: 8px;">
+              {% if not notif.is_read %}
+              <form method="POST" action="{% url 'admin_notification_read' notif.id %}" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary" style="padding: 6px 10px; font-size: 12px;" title="Mark as Read"><i class="fas fa-check"></i></button>
+              </form>
+              {% endif %}
+              <a href="{% url 'admin_notification_detail' notif.id %}" class="btn btn-secondary" style="padding: 6px 10px; font-size: 12px;"><i class="fas fa-eye"></i></a>
+              <a href="{% url 'admin_notification_edit' notif.id %}" class="btn btn-secondary" style="padding: 6px 10px; font-size: 12px;"><i class="fas fa-edit"></i></a>
+              <a href="{% url 'admin_notification_delete' notif.id %}" class="btn btn-secondary" style="padding: 6px 10px; font-size: 12px; color: var(--danger); border-color: var(--danger);"><i class="fas fa-trash"></i></a>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    
+    {% if is_paginated %}
+    <div style="padding: 16px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+      <div style="color: var(--text-muted); font-size: 14px;">
+        Showing page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+      </div>
+      <div style="display: flex; gap: 8px;">
+        {% if page_obj.has_previous %}
+          <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if current_type %}&type={{ current_type }}{% endif %}{% if current_is_read %}&is_read={{ current_is_read }}{% endif %}" class="btn btn-secondary" style="padding: 6px 12px;">Previous</a>
+        {% endif %}
+        {% if page_obj.has_next %}
+          <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if current_type %}&type={{ current_type }}{% endif %}{% if current_is_read %}&is_read={{ current_is_read }}{% endif %}" class="btn btn-secondary" style="padding: 6px 12px;">Next</a>
+        {% endif %}
+      </div>
+    </div>
+    {% endif %}
+    
+    {% else %}
+    <div class="empty-state">
+      <i class="fas fa-bell"></i>
+      <h3>No notifications found</h3>
+      <p>System alerts and user notifications will appear here.</p>
+      <a href="{% url 'admin_notification_add' %}" class="btn btn-primary" style="margin-top: 16px;"><i class="fas fa-plus"></i> Send Notification</a>
+    </div>
+    {% endif %}
+  </div>
+{% endblock %}

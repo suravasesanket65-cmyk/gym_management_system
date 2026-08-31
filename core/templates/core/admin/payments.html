@@ -1,0 +1,29 @@
+{% extends 'core/admin/admin_base.html' %}
+
+{% block title %}Payments{% endblock %}
+
+{% block admin_content %}
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Payments</h1>
+      <p class="page-subtitle">Track revenue and transactions</p>
+    </div>
+    <button class="btn btn-primary"><i class="fas fa-plus"></i> Add New</button>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <h3 class="card-title">Payments List</h3>
+      <div class="search-box" style="width: 250px; display: block;">
+        <i class="fas fa-search"></i>
+        <input type="text" placeholder="Search...">
+      </div>
+    </div>
+    
+    <div class="empty-state">
+      <i class="fas fa-folder-open"></i>
+      <h3>No data available</h3>
+      <p>There are currently no records to display in this module.</p>
+    </div>
+  </div>
+{% endblock %}

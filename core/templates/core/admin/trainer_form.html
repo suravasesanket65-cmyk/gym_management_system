@@ -1,0 +1,61 @@
+{% extends 'core/admin/admin_base.html' %}
+
+{% block title %}{% if object %}Edit Trainer{% else %}Add Trainer{% endif %}{% endblock %}
+
+{% block admin_content %}
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">{% if object %}Edit Trainer: {{ object.full_name }}{% else %}Add New Trainer{% endif %}</h1>
+      <p class="page-subtitle">Fill in the trainer's details below.</p>
+    </div>
+    <a href="{% url 'admin_trainers' %}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back to List</a>
+  </div>
+
+  <div class="card" style="max-width: 800px;">
+    <div class="card-header">
+      <h3 class="card-title">Trainer Information</h3>
+    </div>
+    <div style="padding: 24px;">
+      <form method="POST">
+        {% csrf_token %}
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+          <div>
+            <label style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px; color: var(--text-main);">Full Name</label>
+            {{ form.full_name }}
+            {% if form.full_name.errors %}<div style="color: var(--danger); font-size: 12px; margin-top: 4px;">{{ form.full_name.errors }}</div>{% endif %}
+          </div>
+          <div>
+            <label style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px; color: var(--text-main);">Role / Specialty</label>
+            {{ form.role_specialty }}
+            {% if form.role_specialty.errors %}<div style="color: var(--danger); font-size: 12px; margin-top: 4px;">{{ form.role_specialty.errors }}</div>{% endif %}
+          </div>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+          <label style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px; color: var(--text-main);">Image URL</label>
+          {{ form.image_url }}
+          {% if form.image_url.errors %}<div style="color: var(--danger); font-size: 12px; margin-top: 4px;">{{ form.image_url.errors }}</div>{% endif %}
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px;">
+          <div>
+            <label style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px; color: var(--text-main);">Instagram URL</label>
+            {{ form.instagram_url }}
+            {% if form.instagram_url.errors %}<div style="color: var(--danger); font-size: 12px; margin-top: 4px;">{{ form.instagram_url.errors }}</div>{% endif %}
+          </div>
+          <div>
+            <label style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px; color: var(--text-main);">LinkedIn URL</label>
+            {{ form.linkedin_url }}
+            {% if form.linkedin_url.errors %}<div style="color: var(--danger); font-size: 12px; margin-top: 4px;">{{ form.linkedin_url.errors }}</div>{% endif %}
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 12px;">
+          <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Trainer</button>
+          <a href="{% url 'admin_trainers' %}" class="btn btn-secondary">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}

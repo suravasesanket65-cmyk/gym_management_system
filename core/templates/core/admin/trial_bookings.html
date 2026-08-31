@@ -1,0 +1,102 @@
+{% extends 'core/admin/admin_base.html' %}
+
+{% block title %}Trial Bookings{% endblock %}
+
+{% block admin_content %}
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Trial Bookings</h1>
+      <p class="page-subtitle">Manage potential member leads and trial sessions</p>
+    </div>
+    <a href="{% url 'admin_trial_booking_add' %}" class="btn btn-primary"><i class="fas fa-plus"></i> Add New</a>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <h3 class="card-title">Trial Bookings List</h3>
+      <div style="display: flex; gap: 10px;">
+        <form method="GET" style="display: flex; gap: 10px;">
+          <div class="search-box" style="width: 250px;">
+            <i class="fas fa-search"></i>
+            <input type="text" name="q" placeholder="Search name or email..." value="{{ request.GET.q|default_if_none:'' }}">
+          </div>
+          <select name="status" class="form-select" onchange="this.form.submit()">
+            <option value="">All Statuses</option>
+            <option value="New" {% if request.GET.status == 'New' %}selected{% endif %}>New</option>
+            <option value="Contacted" {% if request.GET.status == 'Contacted' %}selected{% endif %}>Contacted</option>
+            <option value="Converted" {% if request.GET.status == 'Converted' %}selected{% endif %}>Converted</option>
+            <option value="Cancelled" {% if request.GET.status == 'Cancelled' %}selected{% endif %}>Cancelled</option>
+          </select>
+        </form>
+      </div>
+    </div>
+    
+    {% if object_list %}
+    <div style="overflow-x: auto;">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Program</th>
+            <th>Status</th>
+            <th class="text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for trial in object_list %}
+          <tr>
+            <td>{{ trial.created_at|date:"M d, Y" }}</td>
+            <td style="font-weight: 500; color: var(--text-main);">{{ trial.first_name }} {{ trial.last_name }}</td>
+            <td>{{ trial.email }}<br><span style="font-size: 12px; color: var(--text-muted);">{{ trial.phone }}</span></td>
+            <td>{{ trial.program|default:"-" }}</td>
+            <td>
+              {% if trial.status == 'New' %}
+                <span class="status-badge status-warning">{{ trial.status }}</span>
+              {% elif trial.status == 'Converted' %}
+                <span class="status-badge status-active">{{ trial.status }}</span>
+              {% elif trial.status == 'Cancelled' %}
+                <span class="status-badge status-danger">{{ trial.status }}</span>
+              {% else %}
+                <span class="status-badge" style="background-color: rgba(59, 130, 246, 0.15); color: #3b82f6;">{{ trial.status }}</span>
+              {% endif %}
+            </td>
+            <td class="text-right">
+              <div class="action-buttons">
+                <a href="{% url 'admin_trial_booking_detail' trial.id %}" class="btn btn-sm btn-outline"><i class="fas fa-eye"></i></a>
+                <a href="{% url 'admin_trial_booking_edit' trial.id %}" class="btn btn-sm btn-outline"><i class="fas fa-edit"></i></a>
+                <a href="{% url 'admin_trial_booking_delete' trial.id %}" class="btn btn-sm btn-outline text-danger"><i class="fas fa-trash"></i></a>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    {% if is_paginated %}
+    <div class="pagination">
+      {% if page_obj.has_previous %}
+      <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}" class="page-link">&laquo; Prev</a>
+      {% endif %}
+      
+      <span class="page-info">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+      
+      {% if page_obj.has_next %}
+      <a href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}" class="page-link">Next &raquo;</a>
+      {% endif %}
+    </div>
+    {% endif %}
+
+    {% else %}
+    <div class="empty-state">
+      <i class="fas fa-folder-open"></i>
+      <h3>No data available</h3>
+      <p>There are currently no enquiries or trial bookings to display.</p>
+      <a href="{% url 'admin_trial_booking_add' %}" class="btn btn-primary" style="margin-top: 16px;">Create One Now</a>
+    </div>
+    {% endif %}
+  </div>
+{% endblock %}

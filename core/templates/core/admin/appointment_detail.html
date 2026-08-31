@@ -1,0 +1,65 @@
+{% extends 'core/admin/admin_base.html' %}
+
+{% block title %}Appointment Details{% endblock %}
+
+{% block admin_content %}
+  <div class="page-header" style="display: flex; justify-content: space-between; align-items: flex-start;">
+    <div>
+      <h1 class="page-title">{{ appointment.appointment_type }}</h1>
+      <p class="page-subtitle" style="color: var(--neon-orange); font-size: 16px;">{{ appointment.appointment_date|date:"M d, Y" }} at {{ appointment.start_time|time:"h:i A" }}</p>
+    </div>
+    <div style="display: flex; gap: 10px;">
+      <a href="{% url 'admin_appointment_edit' appointment.id %}" class="btn btn-primary"><i class="fas fa-edit"></i> Edit Appointment</a>
+      <a href="{% url 'admin_appointments' %}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back</a>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom: 24px;">
+    <div class="card-header">
+      <h3 class="card-title">Appointment Overview</h3>
+    </div>
+    <div style="padding: 24px;">
+      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-bottom: 20px;">
+        <div>
+          <div style="color: var(--text-muted); font-size: 14px; margin-bottom: 4px;">Member</div>
+          <div style="color: var(--text-main); font-weight: 500; font-size: 16px;">
+            <a href="{% url 'admin_member_detail' appointment.member.id %}" style="color: var(--neon-orange); text-decoration: none;">{{ appointment.member.first_name }} {{ appointment.member.last_name }}</a>
+          </div>
+        </div>
+        <div>
+          <div style="color: var(--text-muted); font-size: 14px; margin-bottom: 4px;">Trainer</div>
+          <div style="color: var(--text-main); font-weight: 500; font-size: 16px;">
+            {% if appointment.trainer %}
+              <a href="{% url 'admin_trainer_detail' appointment.trainer.id %}" style="color: var(--neon-orange); text-decoration: none;">{{ appointment.trainer.full_name }}</a>
+            {% else %}
+              N/A
+            {% endif %}
+          </div>
+        </div>
+        <div>
+          <div style="color: var(--text-muted); font-size: 14px; margin-bottom: 4px;">Time</div>
+          <div style="color: var(--text-main); font-weight: 500; font-size: 16px;">{{ appointment.start_time|time:"h:i A" }} - {{ appointment.end_time|time:"h:i A" }}</div>
+        </div>
+        <div>
+          <div style="color: var(--text-muted); font-size: 14px; margin-bottom: 4px;">Status</div>
+          <div>
+            {% if appointment.status == 'Scheduled' or appointment.status == 'Confirmed' %}
+              <span class="status-badge status-active">{{ appointment.status }}</span>
+            {% elif appointment.status == 'Cancelled' %}
+              <span class="status-badge status-danger">{{ appointment.status }}</span>
+            {% else %}
+              <span class="status-badge status-warning">{{ appointment.status }}</span>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      
+      {% if appointment.notes %}
+      <div style="margin-top: 20px;">
+        <div style="color: var(--text-muted); font-size: 14px; margin-bottom: 4px;">Notes</div>
+        <div style="color: var(--text-main); font-size: 14px; background: rgba(255,255,255,0.02); padding: 16px; border-radius: 8px;">{{ appointment.notes }}</div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

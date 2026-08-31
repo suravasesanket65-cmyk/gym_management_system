@@ -1,0 +1,158 @@
+{% extends 'core/admin/admin_base.html' %}
+
+{% block title %}Member: {{ member.first_name }} {{ member.last_name }}{% endblock %}
+
+{% block admin_content %}
+  <div class="page-header" style="display: flex; justify-content: space-between; align-items: flex-start;">
+    <div>
+      <h1 class="page-title">{{ member.first_name }} {{ member.last_name }}</h1>
+      <p class="page-subtitle">Member since {{ member.joined_date|date:"F d, Y" }}</p>
+    </div>
+    <div style="display: flex; gap: 10px;">
+      <a href="{% url 'admin_member_edit' member.id %}" class="btn btn-primary"><i class="fas fa-edit"></i> Edit</a>
+      <a href="{% url 'admin_members' %}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back</a>
+    </div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+    
+    <!-- Personal Information -->
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Personal Information</h3>
+      </div>
+      <div style="padding: 24px;">
+        <div style="display: grid; grid-template-columns: 100px 1fr; margin-bottom: 12px; border-bottom: 1px solid var(--border); padding-bottom: 12px;">
+          <div style="color: var(--text-muted); font-size: 14px;">Status</div>
+          <div>
+            {% if member.status == 'Active' %}
+              <span class="status-badge status-active">Active</span>
+            {% elif member.status == 'Inactive' %}
+              <span class="status-badge status-warning">Inactive</span>
+            {% else %}
+              <span class="status-badge status-danger">{{ member.status }}</span>
+            {% endif %}
+          </div>
+        </div>
+        <div style="display: grid; grid-template-columns: 100px 1fr; margin-bottom: 12px; border-bottom: 1px solid var(--border); padding-bottom: 12px;">
+          <div style="color: var(--text-muted); font-size: 14px;">Email</div>
+          <div style="color: var(--text-main); font-weight: 500;">{{ member.email }}</div>
+        </div>
+        <div style="display: grid; grid-template-columns: 100px 1fr; margin-bottom: 12px; border-bottom: 1px solid var(--border); padding-bottom: 12px;">
+          <div style="color: var(--text-muted); font-size: 14px;">Phone</div>
+          <div style="color: var(--text-main); font-weight: 500;">{{ member.phone }}</div>
+        </div>
+        <div style="display: grid; grid-template-columns: 100px 1fr; margin-bottom: 12px; border-bottom: 1px solid var(--border); padding-bottom: 12px;">
+          <div style="color: var(--text-muted); font-size: 14px;">Gender</div>
+          <div style="color: var(--text-main); font-weight: 500;">{{ member.get_gender_display }}</div>
+        </div>
+        <div style="display: grid; grid-template-columns: 100px 1fr; margin-bottom: 12px; border-bottom: 1px solid var(--border); padding-bottom: 12px;">
+          <div style="color: var(--text-muted); font-size: 14px;">Date of Birth</div>
+          <div style="color: var(--text-main); font-weight: 500;">{{ member.date_of_birth|date:"M d, Y" }}</div>
+        </div>
+        <div style="display: grid; grid-template-columns: 100px 1fr; margin-bottom: 12px; border-bottom: 1px solid var(--border); padding-bottom: 12px;">
+          <div style="color: var(--text-muted); font-size: 14px;">Address</div>
+          <div style="color: var(--text-main); font-weight: 500;">{{ member.address|default:"N/A" }}</div>
+        </div>
+        <div style="display: grid; grid-template-columns: 100px 1fr;">
+          <div style="color: var(--text-muted); font-size: 14px;">Emergency</div>
+          <div style="color: var(--text-main); font-weight: 500;">{{ member.emergency_contact|default:"N/A" }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Membership & Payment -->
+    <div style="display: flex; flex-direction: column; gap: 24px;">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Active Subscriptions</h3>
+        </div>
+        <div style="padding: 24px;">
+          {% for sub in member.subscriptions.all %}
+            {% if sub.status == 'Active' %}
+              <div style="margin-bottom: 16px; padding: 16px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg-card-hover);">
+                <div style="font-weight: 600; font-size: 16px; color: var(--neon-orange); margin-bottom: 8px;">{{ sub.plan.plan_name }}</div>
+                <div style="display: flex; justify-content: space-between; font-size: 14px;">
+                  <div><span style="color: var(--text-muted);">Starts:</span> {{ sub.start_date|date:"M d, Y" }}</div>
+                  <div><span style="color: var(--text-muted);">Ends:</span> {{ sub.end_date|date:"M d, Y" }}</div>
+                </div>
+              </div>
+            {% endif %}
+          {% empty %}
+            <div style="color: var(--text-muted); font-style: italic;">No active subscriptions.</div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Recent Payments</h3>
+        </div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Amount</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for payment in member.payments.all|slice:":5" %}
+            <tr>
+              <td>{{ payment.transaction_date|date:"M d, Y" }}</td>
+              <td>${{ payment.amount }}</td>
+              <td>
+                {% if payment.payment_status == 'Completed' %}
+                  <span class="status-badge status-active">Paid</span>
+                {% elif payment.payment_status == 'Pending' %}
+                  <span class="status-badge status-warning">Pending</span>
+                {% else %}
+                  <span class="status-badge status-danger">Failed</span>
+                {% endif %}
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="3" style="text-align: center; color: var(--text-muted);">No payments recorded.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top: 24px;">
+    <div class="card-header">
+      <h3 class="card-title">Upcoming Appointments</h3>
+    </div>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Time</th>
+          <th>Type</th>
+          <th>Trainer</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for appt in member.appointments.all %}
+          {% if appt.status == 'Scheduled' %}
+          <tr>
+            <td>{{ appt.appointment_date|date:"M d, Y" }}</td>
+            <td>{{ appt.start_time|time:"h:i A" }}</td>
+            <td>{{ appt.appointment_type }}</td>
+            <td>{{ appt.trainer.full_name|default:"-" }}</td>
+            <td><span class="status-badge status-active">Scheduled</span></td>
+          </tr>
+          {% endif %}
+        {% empty %}
+          <tr>
+            <td colspan="5" style="text-align: center; color: var(--text-muted);">No upcoming appointments.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}

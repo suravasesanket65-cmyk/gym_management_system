@@ -1,0 +1,113 @@
+{% extends 'core/admin/admin_base.html' %}
+
+{% block title %}Trainer: {{ trainer.full_name }}{% endblock %}
+
+{% block admin_content %}
+  <div class="page-header" style="display: flex; justify-content: space-between; align-items: flex-start;">
+    <div style="display: flex; gap: 20px; align-items: center;">
+      {% if trainer.image_url %}
+      <img src="{{ trainer.image_url }}" alt="{{ trainer.full_name }}" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid var(--neon-orange);">
+      {% else %}
+      <div style="width: 80px; height: 80px; border-radius: 50%; background: var(--bg-card-hover); border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 24px; color: var(--text-muted);">
+        <i class="fas fa-user-tie"></i>
+      </div>
+      {% endif %}
+      <div>
+        <h1 class="page-title">{{ trainer.full_name }}</h1>
+        <p class="page-subtitle" style="color: var(--neon-orange);">{{ trainer.role_specialty }}</p>
+      </div>
+    </div>
+    <div style="display: flex; gap: 10px;">
+      <a href="{% url 'admin_trainer_edit' trainer.id %}" class="btn btn-primary"><i class="fas fa-edit"></i> Edit</a>
+      <a href="{% url 'admin_trainers' %}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back</a>
+    </div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+    
+    <!-- Professional Information -->
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Professional Information</h3>
+      </div>
+      <div style="padding: 24px;">
+        <div style="display: grid; grid-template-columns: 120px 1fr; margin-bottom: 12px; border-bottom: 1px solid var(--border); padding-bottom: 12px;">
+          <div style="color: var(--text-muted); font-size: 14px;">Specialty</div>
+          <div style="color: var(--text-main); font-weight: 500;">{{ trainer.role_specialty }}</div>
+        </div>
+        <div style="display: grid; grid-template-columns: 120px 1fr; margin-bottom: 12px; border-bottom: 1px solid var(--border); padding-bottom: 12px;">
+          <div style="color: var(--text-muted); font-size: 14px;">Added Date</div>
+          <div style="color: var(--text-main); font-weight: 500;">{{ trainer.created_at|date:"M d, Y" }}</div>
+        </div>
+        <div style="display: grid; grid-template-columns: 120px 1fr; margin-bottom: 12px; border-bottom: 1px solid var(--border); padding-bottom: 12px;">
+          <div style="color: var(--text-muted); font-size: 14px;">Instagram</div>
+          <div style="color: var(--text-main); font-weight: 500;">
+            {% if trainer.instagram_url %}<a href="{{ trainer.instagram_url }}" target="_blank" style="color: var(--neon-orange);">View Profile <i class="fas fa-external-link-alt" style="font-size: 12px;"></i></a>{% else %}N/A{% endif %}
+          </div>
+        </div>
+        <div style="display: grid; grid-template-columns: 120px 1fr;">
+          <div style="color: var(--text-muted); font-size: 14px;">LinkedIn</div>
+          <div style="color: var(--text-main); font-weight: 500;">
+            {% if trainer.linkedin_url %}<a href="{{ trainer.linkedin_url }}" target="_blank" style="color: var(--neon-orange);">View Profile <i class="fas fa-external-link-alt" style="font-size: 12px;"></i></a>{% else %}N/A{% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Related Information -->
+    <div style="display: flex; flex-direction: column; gap: 24px;">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Class Schedules</h3>
+        </div>
+        <div style="padding: 16px;">
+          {% for class_obj in trainer.class_schedules.all %}
+            <div style="margin-bottom: 8px; padding: 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg-card-hover);">
+              <div style="font-weight: 600; font-size: 14px; color: var(--text-main);">{{ class_obj.class_name }}</div>
+              <div style="display: flex; justify-content: space-between; font-size: 12px; margin-top: 4px;">
+                <div><span style="color: var(--text-muted);">{{ class_obj.day_of_week }}s</span></div>
+                <div><span style="color: var(--text-muted);">{{ class_obj.start_time|time:"h:i A" }} - {{ class_obj.end_time|time:"h:i A" }}</span></div>
+              </div>
+            </div>
+          {% empty %}
+            <div style="color: var(--text-muted); font-style: italic;">No classes scheduled.</div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top: 24px;">
+    <div class="card-header">
+      <h3 class="card-title">Upcoming Appointments</h3>
+    </div>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Time</th>
+          <th>Type</th>
+          <th>Member</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for appt in trainer.appointments.all %}
+          {% if appt.status == 'Scheduled' %}
+          <tr>
+            <td>{{ appt.appointment_date|date:"M d, Y" }}</td>
+            <td>{{ appt.start_time|time:"h:i A" }}</td>
+            <td>{{ appt.appointment_type }}</td>
+            <td>{{ appt.member.first_name }} {{ appt.member.last_name }}</td>
+            <td><span class="status-badge status-active">Scheduled</span></td>
+          </tr>
+          {% endif %}
+        {% empty %}
+          <tr>
+            <td colspan="5" style="text-align: center; color: var(--text-muted);">No upcoming appointments.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends 'core/admin/admin_base.html' %}
+
+{% block title %}Notification Details{% endblock %}
+
+{% block admin_content %}
+  <div class="page-header" style="display: flex; justify-content: space-between; align-items: flex-start;">
+    <div>
+      <h1 class="page-title">{{ notification.title }}</h1>
+      <p class="page-subtitle" style="color: var(--text-muted); font-size: 16px;">{{ notification.created_at|date:"M d, Y, h:i A" }}</p>
+    </div>
+    <div style="display: flex; gap: 10px;">
+      {% if not notification.is_read %}
+        <form method="POST" action="{% url 'admin_notification_read' notification.id %}">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-primary"><i class="fas fa-check"></i> Mark as Read</button>
+        </form>
+      {% endif %}
+      <a href="{% url 'admin_notification_edit' notification.id %}" class="btn btn-secondary"><i class="fas fa-edit"></i> Edit</a>
+      <a href="{% url 'admin_notifications' %}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back</a>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom: 24px;">
+    <div class="card-header">
+      <h3 class="card-title">Notification Content</h3>
+    </div>
+    <div style="padding: 24px;">
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 24px;">
+        <div>
+          <div style="color: var(--text-muted); font-size: 14px; margin-bottom: 4px;">Recipient</div>
+          <div style="color: var(--text-main); font-weight: 500; font-size: 16px;">{{ notification.recipient.username }}</div>
+        </div>
+        <div>
+          <div style="color: var(--text-muted); font-size: 14px; margin-bottom: 4px;">Type</div>
+          <div style="color: var(--neon-orange); font-weight: 500; font-size: 16px;">{{ notification.notification_type }}</div>
+        </div>
+        <div>
+          <div style="color: var(--text-muted); font-size: 14px; margin-bottom: 4px;">Status</div>
+          <div>
+            {% if notification.is_read %}
+              <span class="status-badge status-active">Read</span>
+            {% else %}
+              <span class="status-badge status-warning">Unread</span>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      
+      <div style="margin-top: 10px;">
+        <div style="color: var(--text-muted); font-size: 14px; margin-bottom: 8px;">Message</div>
+        <div style="color: var(--text-main); font-size: 16px; line-height: 1.6; background: rgba(255,255,255,0.03); padding: 20px; border-radius: 8px; border: 1px solid var(--border);">{{ notification.message|linebreaksbr }}</div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

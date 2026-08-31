@@ -1,0 +1,350 @@
+{% extends 'core/admin/admin_base.html' %}
+
+{% block title %}Overview{% endblock %}
+
+{% block extra_css %}
+<style>
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+  
+  .kpi-card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .kpi-icon {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    font-size: 24px;
+    color: var(--neon-orange-soft);
+  }
+  
+  .kpi-title {
+    font-size: 13px;
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+  }
+  
+  .kpi-value {
+    font-size: 32px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  
+  .kpi-trend {
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .trend-up { color: var(--success); }
+  .trend-down { color: var(--danger); }
+  
+  /* Quick Actions */
+  .quick-actions {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 32px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+  }
+  
+  .qa-btn {
+    flex: 0 0 auto;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text-main);
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .qa-btn i { color: var(--neon-orange); }
+  .qa-btn:hover {
+    border-color: var(--neon-orange);
+    background-color: var(--bg-card-hover);
+    transform: translateY(-2px);
+  }
+
+  /* Charts */
+  .charts-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+  
+  .chart-container {
+    height: 300px;
+    width: 100%;
+    margin-top: 16px;
+  }
+
+  /* Tables Grid */
+  .tables-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+
+  @media (max-width: 1200px) {
+    .dashboard-grid { grid-template-columns: repeat(2, 1fr); }
+    .charts-grid, .tables-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 768px) {
+    .dashboard-grid { grid-template-columns: 1fr; }
+  }
+</style>
+{% endblock %}
+
+{% block admin_content %}
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Welcome back, Admin!</h1>
+      <p class="page-subtitle">Here is the overview of CORESA Gym for today.</p>
+    </div>
+  </div>
+
+  <!-- QUICK ACTIONS -->
+  <div class="quick-actions">
+    <a href="{% url 'admin_members' %}" class="qa-btn"><i class="fas fa-user-plus"></i> Add Member</a>
+    <a href="{% url 'admin_trainers' %}" class="qa-btn"><i class="fas fa-user-tie"></i> Add Trainer</a>
+    <a href="{% url 'admin_plans' %}" class="qa-btn"><i class="fas fa-id-card"></i> Create Plan</a>
+    <a href="{% url 'admin_payments' %}" class="qa-btn"><i class="fas fa-dollar-sign"></i> Collect Payment</a>
+    <a href="{% url 'admin_attendance' %}" class="qa-btn"><i class="fas fa-check-circle"></i> Mark Attendance</a>
+    <a href="{% url 'admin_workouts' %}" class="qa-btn"><i class="fas fa-dumbbell"></i> Create Workout</a>
+  </div>
+
+  <!-- KPI CARDS -->
+  <div class="dashboard-grid">
+    <div class="kpi-card">
+      <i class="fas fa-users kpi-icon"></i>
+      <div class="kpi-title">Total Members</div>
+      <div class="kpi-value">{{ total_members|default:0 }}</div>
+      <div class="kpi-trend trend-up"><i class="fas fa-arrow-up"></i> vs last month</div>
+    </div>
+    <div class="kpi-card">
+      <i class="fas fa-user-check kpi-icon"></i>
+      <div class="kpi-title">Active Members</div>
+      <div class="kpi-value">{{ active_members|default:0 }}</div>
+      <div class="kpi-trend trend-up"><i class="fas fa-arrow-up"></i> vs last month</div>
+    </div>
+    <div class="kpi-card">
+      <i class="fas fa-chart-line kpi-icon"></i>
+      <div class="kpi-title">Monthly Revenue</div>
+      <div class="kpi-value">${{ total_revenue|default:"0.00" }}</div>
+      <div class="kpi-trend trend-up"><i class="fas fa-arrow-up"></i> vs last month</div>
+    </div>
+    <div class="kpi-card">
+      <i class="fas fa-clipboard-list kpi-icon"></i>
+      <div class="kpi-title">Today's Attendance</div>
+      <div class="kpi-value">{{ today_attendance|default:0 }}</div>
+      <div class="kpi-trend trend-down"><i class="fas fa-arrow-down"></i> vs yesterday</div>
+    </div>
+    <div class="kpi-card">
+      <i class="fas fa-exclamation-circle kpi-icon"></i>
+      <div class="kpi-title">Expiring Memberships</div>
+      <div class="kpi-value" style="color: var(--warning);">{{ expiring_memberships|default:0 }}</div>
+      <div class="kpi-trend" style="color: var(--text-muted);">Require follow-up</div>
+    </div>
+    <div class="kpi-card">
+      <i class="far fa-calendar-check kpi-icon"></i>
+      <div class="kpi-title">Upcoming Appointments</div>
+      <div class="kpi-value">{{ upcoming_appointments|default:0 }}</div>
+      <div class="kpi-trend" style="color: var(--text-muted);">Appointments</div>
+    </div>
+    <div class="kpi-card">
+      <i class="fas fa-hand-holding-usd kpi-icon"></i>
+      <div class="kpi-title">Pending Payments</div>
+      <div class="kpi-value" style="color: var(--danger);">${{ pending_payments|default:"0.00" }}</div>
+      <div class="kpi-trend" style="color: var(--text-muted);">Requires attention</div>
+    </div>
+    <div class="kpi-card">
+      <i class="fas fa-user-tie kpi-icon"></i>
+      <div class="kpi-title">Total Trainers</div>
+      <div class="kpi-value">{{ total_trainers|default:0 }}</div>
+      <div class="kpi-trend" style="color: var(--text-muted);">All active</div>
+    </div>
+  </div>
+
+  <!-- CHARTS AREA -->
+  <div class="charts-grid">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Revenue & Attendance Trend</h3>
+      </div>
+      <div class="chart-container">
+        <canvas id="mainChart"></canvas>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Membership Distribution</h3>
+      </div>
+      <div class="chart-container">
+        <canvas id="donutChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABLES AREA -->
+  <div class="tables-grid">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Recent Registrations</h3>
+        <a href="{% url 'admin_members' %}" class="btn btn-secondary">View All</a>
+      </div>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Member</th>
+            <th>Plan</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for member in latest_members %}
+          <tr>
+            <td>
+              <div style="font-weight: 500; color: var(--text-main);">{{ member.first_name }} {{ member.last_name }}</div>
+              <div style="font-size: 12px; color: var(--text-muted);">Joined {{ member.joined_date|date:"M d, Y" }}</div>
+            </td>
+            <td>{% if member.subscriptions.exists %}{{ member.subscriptions.first.plan.plan_name }}{% else %}No Plan{% endif %}</td>
+            <td>
+              {% if member.status == 'Active' %}
+              <span class="status-badge status-active">Active</span>
+              {% elif member.status == 'Inactive' %}
+              <span class="status-badge status-warning">Inactive</span>
+              {% else %}
+              <span class="status-badge status-danger">{{ member.status }}</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="3" style="text-align: center; color: var(--text-muted);">No members registered yet.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Upcoming Appointments</h3>
+        <a href="{% url 'admin_appointments' %}" class="btn btn-secondary">View All</a>
+      </div>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Member / Trainer</th>
+            <th>Type</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for appt in upcoming_appointments_list %}
+          <tr>
+            <td>
+              <div style="font-weight: 500; color: var(--text-main);">{{ appt.start_time|time:"h:i A" }}</div>
+              <div style="font-size: 12px; color: var(--text-muted);">{{ appt.appointment_date|date:"M d" }}</div>
+            </td>
+            <td>
+              <div style="font-weight: 500; color: var(--text-main);">{{ appt.member.first_name }} {{ appt.member.last_name }}</div>
+              <div style="font-size: 12px; color: var(--text-muted);">{% if appt.trainer %}with {{ appt.trainer.full_name }}{% endif %}</div>
+            </td>
+            <td><span class="status-badge" style="background-color: var(--steel);">{{ appt.appointment_type }}</span></td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="3" style="text-align: center; color: var(--text-muted);">No upcoming appointments.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% endblock %}
+
+{% block extra_js %}
+{{ revenue_attendance_chart|json_script:"chart-data" }}
+{{ membership_distribution|json_script:"donut-data" }}
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    Chart.defaults.color = '#9E9E9E';
+    Chart.defaults.font.family = "'Work Sans', sans-serif";
+    
+    // Main Chart (Revenue & Attendance)
+    const rawChartData = JSON.parse(document.getElementById('chart-data').textContent);
+    const ctxMain = document.getElementById('mainChart').getContext('2d');
+    new Chart(ctxMain, {
+      type: 'bar',
+      data: {
+        labels: rawChartData.labels,
+        datasets: [
+          {
+            label: 'Revenue ($)',
+            data: rawChartData.revenue_data,
+            backgroundColor: '#FF4B1F',
+            borderRadius: 4
+          },
+          {
+            label: 'Attendance',
+            data: rawChartData.attendance_data,
+            backgroundColor: '#24282D',
+            borderRadius: 4
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { position: 'top' } },
+        scales: {
+          x: { grid: { display: false, color: 'rgba(255,255,255,0.05)' } },
+          y: { grid: { color: 'rgba(255,255,255,0.05)' } }
+        }
+      }
+    });
+
+    // Donut Chart (Membership Dist)
+    const rawDonutData = JSON.parse(document.getElementById('donut-data').textContent);
+    const ctxDonut = document.getElementById('donutChart').getContext('2d');
+    new Chart(ctxDonut, {
+      type: 'doughnut',
+      data: {
+        labels: rawDonutData.labels,
+        datasets: [{
+          data: rawDonutData.data,
+          backgroundColor: ['#FF4B1F', '#FF7A45', '#24282D', '#4caf50', '#9c27b0', '#2196f3'],
+          borderWidth: 0,
+          hoverOffset: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '75%',
+        plugins: { legend: { position: 'bottom' } }
+      }
+    });
+  });
+</script>
+{% endblock %}

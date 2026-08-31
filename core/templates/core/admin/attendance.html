@@ -1,0 +1,96 @@
+{% extends 'core/admin/admin_base.html' %}
+
+{% block title %}Attendance{% endblock %}
+
+{% block admin_content %}
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Attendance</h1>
+      <p class="page-subtitle">Track member and staff attendance</p>
+    </div>
+    <a href="{% url 'admin_attendance_add' %}" class="btn btn-primary"><i class="fas fa-plus"></i> Add New</a>
+  </div>
+
+  <div class="card">
+    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+      <h3 class="card-title">Attendance List</h3>
+      <form method="GET" action="{% url 'admin_attendance' %}" style="display: flex; gap: 10px;">
+        <input type="date" name="date" value="{{ date_filter }}" style="padding: 8px; border-radius: 4px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-main);">
+        <div class="search-box">
+          <i class="fas fa-search"></i>
+          <input type="text" name="q" value="{{ search_query }}" placeholder="Search members...">
+        </div>
+        <button type="submit" class="btn btn-primary" style="padding: 6px 12px; border-radius: 4px;">Search</button>
+        {% if search_query or date_filter %}
+          <a href="{% url 'admin_attendance' %}" class="btn btn-secondary" style="display: flex; align-items: center; justify-content: center; height: 100%; border-radius: 4px;">Clear</a>
+        {% endif %}
+      </form>
+    </div>
+    
+    {% if attendances %}
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Member</th>
+          <th>Check-in Date/Time</th>
+          <th>Check-out Time</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for att in attendances %}
+        <tr>
+          <td>
+            <div style="font-weight: 500; color: var(--text-main);">{{ att.member.first_name }} {{ att.member.last_name }}</div>
+          </td>
+          <td>
+            <div style="color: var(--text-muted);">{{ att.check_in_time|date:"M d, Y h:i A" }}</div>
+          </td>
+          <td>
+            {% if att.check_out_time %}
+              <div style="color: var(--text-muted);">{{ att.check_out_time|date:"h:i A" }}</div>
+            {% else %}
+              <span class="status-badge status-warning">In Gym</span>
+            {% endif %}
+          </td>
+          <td>
+            <div style="display: flex; gap: 8px;">
+              <a href="{% url 'admin_attendance_detail' att.id %}" class="btn btn-secondary" style="padding: 6px 10px; font-size: 12px;"><i class="fas fa-eye"></i></a>
+              <a href="{% url 'admin_attendance_edit' att.id %}" class="btn btn-secondary" style="padding: 6px 10px; font-size: 12px;"><i class="fas fa-edit"></i></a>
+              <a href="{% url 'admin_attendance_delete' att.id %}" class="btn btn-secondary" style="padding: 6px 10px; font-size: 12px; color: var(--danger); border-color: var(--danger);"><i class="fas fa-trash"></i></a>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    
+    {% if is_paginated %}
+    <div style="padding: 16px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+      <div style="color: var(--text-muted); font-size: 14px;">
+        Showing page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+      </div>
+      <div style="display: flex; gap: 8px;">
+        {% if page_obj.has_previous %}
+          <a href="?page=1{% if search_query %}&q={{ search_query }}{% endif %}{% if date_filter %}&date={{ date_filter }}{% endif %}" class="btn btn-secondary" style="padding: 6px 12px;">&laquo; First</a>
+          <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if date_filter %}&date={{ date_filter }}{% endif %}" class="btn btn-secondary" style="padding: 6px 12px;">Previous</a>
+        {% endif %}
+        
+        {% if page_obj.has_next %}
+          <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if date_filter %}&date={{ date_filter }}{% endif %}" class="btn btn-secondary" style="padding: 6px 12px;">Next</a>
+          <a href="?page={{ page_obj.paginator.num_pages }}{% if search_query %}&q={{ search_query }}{% endif %}{% if date_filter %}&date={{ date_filter }}{% endif %}" class="btn btn-secondary" style="padding: 6px 12px;">Last &raquo;</a>
+        {% endif %}
+      </div>
+    </div>
+    {% endif %}
+    
+    {% else %}
+    <div class="empty-state">
+      <i class="fas fa-folder-open"></i>
+      <h3>No attendance records found</h3>
+      <p>Create your first attendance record.</p>
+      <a href="{% url 'admin_attendance_add' %}" class="btn btn-primary" style="margin-top: 16px;"><i class="fas fa-plus"></i> Add Attendance</a>
+    </div>
+    {% endif %}
+  </div>
+{% endblock %}

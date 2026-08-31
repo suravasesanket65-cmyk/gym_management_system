@@ -1,0 +1,82 @@
+{% extends 'core/admin/admin_base.html' %}
+
+{% block title %}{% if object %}Edit Trial Booking{% else %}Add Trial Booking{% endif %}{% endblock %}
+
+{% block admin_content %}
+  <div class="page-header">
+    <div>
+      <a href="{% url 'admin_trial_bookings' %}" style="color: var(--text-muted); text-decoration: none; font-size: 14px; margin-bottom: 8px; display: inline-block;">
+        <i class="fas fa-arrow-left"></i> Back to Trial Bookings
+      </a>
+      <h1 class="page-title">{% if object %}Edit Trial Booking{% else %}Add Trial Booking{% endif %}</h1>
+    </div>
+  </div>
+
+  <div class="card" style="max-width: 800px;">
+    <div class="card-header">
+      <h3 class="card-title">Booking Information</h3>
+    </div>
+    
+    <div style="padding: 24px;">
+      <form method="POST">
+        {% csrf_token %}
+        
+        {% if form.non_field_errors %}
+        <div style="background-color: rgba(239, 68, 68, 0.1); color: var(--danger); padding: 12px; border-radius: 8px; margin-bottom: 20px;">
+          {{ form.non_field_errors }}
+        </div>
+        {% endif %}
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+          <div>
+            <label class="form-label" for="{{ form.first_name.id_for_label }}">First Name</label>
+            {{ form.first_name }}
+            {{ form.first_name.errors }}
+          </div>
+          <div>
+            <label class="form-label" for="{{ form.last_name.id_for_label }}">Last Name</label>
+            {{ form.last_name }}
+            {{ form.last_name.errors }}
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+          <div>
+            <label class="form-label" for="{{ form.email.id_for_label }}">Email</label>
+            {{ form.email }}
+            {{ form.email.errors }}
+          </div>
+          <div>
+            <label class="form-label" for="{{ form.phone.id_for_label }}">Phone</label>
+            {{ form.phone }}
+            {{ form.phone.errors }}
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+          <div>
+            <label class="form-label" for="{{ form.program.id_for_label }}">Interested Program</label>
+            {{ form.program }}
+            {{ form.program.errors }}
+          </div>
+          <div>
+            <label class="form-label" for="{{ form.status.id_for_label }}">Status</label>
+            {{ form.status }}
+            {{ form.status.errors }}
+          </div>
+        </div>
+        
+        <div style="margin-bottom: 24px;">
+          <label class="form-label" for="{{ form.message.id_for_label }}">Message</label>
+          {{ form.message }}
+          {{ form.message.errors }}
+        </div>
+        
+        <div style="display: flex; gap: 12px; justify-content: flex-end;">
+          <a href="{% url 'admin_trial_bookings' %}" class="btn btn-outline">Cancel</a>
+          <button type="submit" class="btn btn-primary">Save Booking</button>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}

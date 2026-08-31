@@ -1,0 +1,535 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CORESA — Modern Fitness &amp; Performance Gym</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Anton&family=Work+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'core/css/style.css' %}">
+</head>
+
+<body>
+
+  {% if messages %}
+  <div style="position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px;">
+    {% for message in messages %}
+      <div style="padding: 16px 24px; border-radius: 8px; font-weight: 500; font-size: 14px;
+        {% if message.tags == 'error' %}background-color: var(--danger); color: white;
+        {% elif message.tags == 'success' %}background-color: var(--success); color: white;
+        {% else %}background-color: var(--steel); color: var(--text-main);{% endif %}
+        box-shadow: 0 4px 12px rgba(0,0,0,0.5);">
+        {{ message }}
+      </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <!-- ===== NAVIGATION BAR ===== -->
+  <header id="siteHeader">
+    <div class="wrap">
+      <nav>
+        <a href="#home" class="logo">CORE<span>SA</span></a>
+        <ul class="nav-links">
+          <li><a href="#home" class="active">Home</a></li>
+          <li><a href="#about">About Us</a></li>
+          <li><a href="#program">Programs</a></li>
+          <li><a href="#membership">Membership</a></li>
+          <li><a href="#trainer">Trainers</a></li>
+          <li><a href="#contact-section">Contact</a></li>
+        </ul>
+        <div class="nav-cta">
+          <a href="{% url 'login' %}" class="btn btn-outline" style="border-color:rgba(255,75,31,0.5); color:var(--text-main);">Sign In</a>
+          <a href="#contact-section" class="btn btn-primary">Join Now</a>
+          <button class="burger" id="burgerBtn" aria-label="Open menu">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ===== MOBILE MENU ===== -->
+  <div class="mobile-menu" id="mobileMenu">
+    <button class="mobile-close" id="mobileClose" aria-label="Close menu">×</button>
+    <a href="#home">Home</a>
+    <a href="#about">About Us</a>
+    <a href="#program">Programs</a>
+    <a href="#membership">Membership</a>
+    <a href="#trainer">Trainers</a>
+    <a href="#contact-section">Contact</a>
+    <a href="#contact-section" class="btn btn-primary" style="margin-top:20px;">Join Now</a>
+  </div>
+
+  <!-- ===== HERO SECTION ===== -->
+  <section id="home">
+    <div class="wrap hero-inner">
+      <div>
+        <div class="eyebrow">Be Stronger Than Your Excuses</div>
+      </div>
+      <h1>Train Hard.<br><span class="accent-text">Stay Strong.</span><br>Repeat.</h1>
+      <p class="hero-sub">CORESA is Pune's premium performance gym built around real coaching, honest programming, and
+        state-of-the-art strength technology designed to unleash your peak potential.</p>
+      <div class="hero-cta">
+        <a href="#contact-section" class="btn btn-primary">Join Now — Free Trial</a>
+        <a href="#program" class="btn btn-outline">Explore Programs</a>
+      </div>
+
+      <!-- Hero Stats Row -->
+      <div class="hero-stats">
+        <div class="stat-item">
+          <strong>12+</strong>
+          <span>Years Coaching</span>
+        </div>
+        <div class="stat-item">
+          <strong>1,400+</strong>
+          <span>Active Members</span>
+        </div>
+        <div class="stat-item">
+          <strong>18</strong>
+          <span>Certified Coaches</span>
+        </div>
+        <div class="stat-item">
+          <strong>98%</strong>
+          <span>Goal Success Rate</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Marquee Ticker -->
+    <div class="ticker">
+      <div class="ticker-track">
+        <span><span>12+ Years Coaching</span><span>1,400+ Active Members</span><span>18 Certified
+            Trainers</span><span>24/7 Access</span><span>6 Signature Programs</span><span>4.9★ Member
+            Rating</span></span>
+        <span><span>12+ Years Coaching</span><span>1,400+ Active Members</span><span>18 Certified
+            Trainers</span><span>24/7 Access</span><span>6 Signature Programs</span><span>4.9★ Member
+            Rating</span></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ABOUT SECTION ===== -->
+
+  <section id="about">
+    <div class="wrap about-grid">
+      <div class="about-imgs reveal">
+        <img class="about-img-main"
+          src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&w=900&q=80"
+          alt="Inside CORESA gym floor">
+        <img class="about-img-float"
+          src="https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?auto=format&fit=crop&w=500&q=80"
+          alt="Free weights rack">
+        <div class="about-badge">
+          <span class="num">98%</span>
+          <span class="lbl">Goal<br>Success</span>
+        </div>
+      </div>
+
+      <div class="about-text reveal">
+        <div class="eyebrow">Who We Are</div>
+        <h2 style="font-size:clamp(32px, 4.2vw, 48px); margin:16px 0 22px;">A Gym Built On<br>Coaching, Not Machines
+        </h2>
+        <p>CORESA started in 2013 as a single-room barbell club in Pune. Today it's a 12,000 sq. ft. facility, but the
+          philosophy hasn't moved an inch: every member gets a real program, real feedback, and a coach who knows their
+          name.</p>
+        <p>We combine strength training, conditioning, and recovery science under one roof — so progress isn't
+          guesswork, it's tracked, tested, and adjusted every four weeks.</p>
+        <a href="#contact-section" class="btn btn-primary" style="margin-top:10px;">Join Us Today</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PROGRAMS SECTION ===== -->
+  <section id="program">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div>
+          <div class="eyebrow">Signature Tracks</div>
+          <h2 style="margin-top:14px;">Programs Built Around Your Goal</h2>
+        </div>
+        <p>Six focused disciplines run by coaches who specialize in that training modality — pick one or stack them into
+          your weekly routine.</p>
+      </div>
+
+      <div class="program-grid reveal">
+        <div class="program-card">
+          <img src="https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?auto=format&fit=crop&w=700&q=80"
+            alt="Strength training program">
+          <div class="pc-body">
+            <div class="program-tag">01 · Strength</div>
+            <h3>Strength Training</h3>
+            <p>Barbell-based programming to build raw, functional strength with progressive overload tracking.</p>
+            <a href="#contact-section" class="program-link">Join Program <svg width="16" height="16" viewBox="0 0 24 24"
+                fill="none">
+                <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+              </svg></a>
+          </div>
+        </div>
+
+        <div class="program-card">
+          <img src="https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=700&q=80"
+            alt="HIIT conditioning program">
+          <div class="pc-body">
+            <div class="program-tag">02 · Conditioning</div>
+            <h3>HIIT &amp; Metcon</h3>
+            <p>High-output interval circuits designed to burn fat and build engine capacity in 40 minutes flat.</p>
+            <a href="#contact-section" class="program-link">Join Program <svg width="16" height="16" viewBox="0 0 24 24"
+                fill="none">
+                <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+              </svg></a>
+          </div>
+        </div>
+
+        <div class="program-card">
+          <img src="https://images.unsplash.com/photo-1575052814086-f385e2e2ad1b?auto=format&fit=crop&w=700&q=80"
+            alt="Boxing training program">
+          <div class="pc-body">
+            <div class="program-tag">03 · Combat</div>
+            <h3>Boxing Conditioning</h3>
+            <p>Pad work, bag rounds, and footwork drills that double as one of our hardest calorie burns.</p>
+            <a href="#contact-section" class="program-link">Join Program <svg width="16" height="16" viewBox="0 0 24 24"
+                fill="none">
+                <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+              </svg></a>
+          </div>
+        </div>
+
+        <div class="program-card">
+          <img src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=700&q=80"
+            alt="Yoga and mobility program">
+          <div class="pc-body">
+            <div class="program-tag">04 · Recovery</div>
+            <h3>Yoga &amp; Mobility</h3>
+            <p>Guided mobility flows and breathwork sessions to keep joints healthy under heavy load.</p>
+            <a href="#contact-section" class="program-link">Join Program <svg width="16" height="16" viewBox="0 0 24 24"
+                fill="none">
+                <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+              </svg></a>
+          </div>
+        </div>
+
+        <div class="program-card">
+          <img src="https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?auto=format&fit=crop&w=700&q=80"
+            alt="CrossFit functional training program">
+          <div class="pc-body">
+            <div class="program-tag">05 · Functional</div>
+            <h3>CrossFit Style</h3>
+            <p>Varied, high-intensity functional movements scaled to every level — from first-timers to competitors.</p>
+            <a href="#contact-section" class="program-link">Join Program <svg width="16" height="16" viewBox="0 0 24 24"
+                fill="none">
+                <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+              </svg></a>
+          </div>
+        </div>
+
+        <div class="program-card">
+          <img src="https://images.unsplash.com/photo-1571008887538-b36bb32f4571?auto=format&fit=crop&w=700&q=80"
+            alt="Cardio training program">
+          <div class="pc-body">
+            <div class="program-tag">06 · Endurance</div>
+            <h3>Cardio Blast</h3>
+            <p>Treadmill, rower, and bike intervals structured around heart-rate zone training.</p>
+            <a href="#contact-section" class="program-link">Join Program <svg width="16" height="16" viewBox="0 0 24 24"
+                fill="none">
+                <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+              </svg></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== MEMBERSHIP & PRICING PLANS SECTION ===== -->
+  <section id="membership">
+    <div class="wrap">
+      <div class="membership-head reveal">
+        <span class="membership-eyebrow">Subscriptions</span>
+        <h2 class="membership-title">FLEXIBLE <span class="accent-text">PLANS</span> FOR EVERY GOAL</h2>
+      </div>
+
+      <div class="membership-grid reveal">
+        <!-- Plan 1: Basic -->
+        <div class="membership-card">
+          <div>
+            <div class="membership-header">
+              <h3>Basic</h3>
+              <div class="membership-price-wrap">
+                <span class="price">$25</span>
+                <span class="period">/monthly</span>
+              </div>
+              <p class="membership-tagline">Essential package for regular workouts.</p>
+            </div>
+
+            <span class="what-you-get-label">WHAT YOU GET</span>
+            <ul class="membership-features-list">
+              <li><span class="check-icon">✓</span> Unlimited access to the gym</li>
+              <li><span class="check-icon">✓</span> 1 free group class per month</li>
+              <li><span class="check-icon">✓</span> Free access to relaxation areas</li>
+            </ul>
+          </div>
+          <a href="#contact-section" class="membership-btn membership-btn-dark">Get started <span>↗</span></a>
+        </div>
+
+        <!-- Plan 2: Standard (Highlighted with Warm Glow) -->
+        <div class="membership-card featured">
+          <div>
+            <div class="membership-header">
+              <h3>Standard</h3>
+              <div class="membership-price-wrap">
+                <span class="price">$35</span>
+                <span class="period">/monthly</span>
+              </div>
+              <p class="membership-tagline">Extended package for comprehensive training.</p>
+            </div>
+
+            <span class="what-you-get-label">WHAT YOU GET</span>
+            <ul class="membership-features-list">
+              <li><span class="check-icon">✓</span> Unlimited access to the gym</li>
+              <li><span class="check-icon">✓</span> 3 free group classes per month</li>
+              <li><span class="check-icon">✓</span> Free access to relaxation areas and sauna</li>
+            </ul>
+          </div>
+          <a href="#contact-section" class="membership-btn membership-btn-orange">Get started <span>↗</span></a>
+        </div>
+
+        <!-- Plan 3: Premium -->
+        <div class="membership-card">
+          <div>
+            <div class="membership-header">
+              <h3>Premium</h3>
+              <div class="membership-price-wrap">
+                <span class="price">$45</span>
+                <span class="period">/monthly</span>
+              </div>
+              <p class="membership-tagline">Deluxe package with maximum benefits.</p>
+            </div>
+
+            <span class="what-you-get-label">WHAT YOU GET</span>
+            <ul class="membership-features-list">
+              <li><span class="check-icon">✓</span> Unlimited access to the gym</li>
+              <li><span class="check-icon">✓</span> Unlimited group classes</li>
+              <li><span class="check-icon">✓</span> 2 personal training sessions per month</li>
+              <li><span class="check-icon">✓</span> Free access to relaxation areas, sauna, and pool</li>
+            </ul>
+          </div>
+          <a href="#contact-section" class="membership-btn membership-btn-dark">Get started <span>↗</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TRAINERS SECTION ===== -->
+  <section id="trainer">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div>
+          <div class="eyebrow">Meet The Floor</div>
+          <h2 style="margin-top:14px;">Coaches Who Show Up<br>Every Rep With You</h2>
+        </div>
+        <p>Every CORESA coach is certified, still trains competitively, and carries a caseload small enough to actually
+          know your form.</p>
+      </div>
+
+      <div class="trainer-grid reveal">
+        <div class="trainer-card">
+          <div class="trainer-img"><img
+              src="https://images.unsplash.com/photo-1571731956672-f2b94d7dd0cb?auto=format&fit=crop&w=500&q=80"
+              alt="Coach Arjun Mehta, head strength coach"></div>
+          <div class="trainer-info">
+            <h3>Arjun Mehta</h3>
+            <div class="trainer-role">Head Strength Coach</div>
+            <div class="trainer-social">
+              <a href="#" aria-label="Instagram">IG</a>
+              <a href="#" aria-label="LinkedIn">IN</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="trainer-card">
+          <div class="trainer-img"><img
+              src="https://images.unsplash.com/photo-1548690312-e3b507d8c110?auto=format&fit=crop&w=500&q=80"
+              alt="Coach Priya Nair, HIIT coach"></div>
+          <div class="trainer-info">
+            <h3>Priya Nair</h3>
+            <div class="trainer-role">HIIT &amp; Conditioning</div>
+            <div class="trainer-social">
+              <a href="#" aria-label="Instagram">IG</a>
+              <a href="#" aria-label="LinkedIn">IN</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="trainer-card">
+          <div class="trainer-img"><img
+              src="https://images.unsplash.com/photo-1567013127542-490d757e51fc?auto=format&fit=crop&w=500&q=80"
+              alt="Coach Rohan Deshmukh, boxing coach"></div>
+          <div class="trainer-info">
+            <h3>Rohan Deshmukh</h3>
+            <div class="trainer-role">Boxing Coach</div>
+            <div class="trainer-social">
+              <a href="#" aria-label="Instagram">IG</a>
+              <a href="#" aria-label="LinkedIn">IN</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="trainer-card">
+          <div class="trainer-img"><img
+              src="https://images.unsplash.com/photo-1594381898411-846e7d193883?auto=format&fit=crop&w=500&q=80"
+              alt="Coach Sana Sheikh, mobility coach"></div>
+          <div class="trainer-info">
+            <h3>Sana Sheikh</h3>
+            <div class="trainer-role">Mobility &amp; Yoga</div>
+            <div class="trainer-social">
+              <a href="#" aria-label="Instagram">IG</a>
+              <a href="#" aria-label="LinkedIn">IN</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CONTACT / BOOK TRIAL SECTION ===== -->
+  <section id="contact-section">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div>
+          <div class="eyebrow">Get Started</div>
+          <h2 style="margin-top:14px;">Walk In. Lift Once.<br>Decide For Yourself.</h2>
+        </div>
+        <p>First session is on us — bring shoes, water, and questions. We'll handle the rest.</p>
+      </div>
+
+      <div class="contact-grid reveal">
+        <div class="contact-info">
+          <div class="contact-info-item">
+            <div class="ci-icon">📍</div>
+            <div>
+              <h4>Studio Address</h4>
+              <p>Chinchwad, Pune, Maharashtra 411033</p>
+            </div>
+          </div>
+          <div class="contact-info-item">
+            <div class="ci-icon">📞</div>
+            <div>
+              <h4>Phone</h4>
+              <p>+91 98765 43210</p>
+            </div>
+          </div>
+          <div class="contact-info-item">
+            <div class="ci-icon">✉️</div>
+            <div>
+              <h4>Email</h4>
+              <p>hello@coresa.fit</p>
+            </div>
+          </div>
+          <div style="margin-top:32px;">
+            <div class="hours-row"><span>Monday – Friday</span><span>5:00 AM – 11:00 PM</span></div>
+            <div class="hours-row"><span>Saturday</span><span>6:00 AM – 9:00 PM</span></div>
+            <div class="hours-row"><span>Sunday</span><span>7:00 AM – 2:00 PM</span></div>
+          </div>
+        </div>
+
+        <form class="form-box" method="POST" action="{% url 'submit_trial' %}">
+          {% csrf_token %}
+          <div class="form-row">
+            <div>
+              <label for="fname">First Name</label>
+              <input id="fname" name="first_name" type="text" placeholder="first name" required>
+            </div>
+            <div>
+              <label for="lname">Last Name</label>
+              <input id="lname" name="last_name" type="text" placeholder="last name" required>
+            </div>
+          </div>
+          <div class="form-row">
+            <div>
+              <label for="email">Email</label>
+              <input id="email" name="email" type="email" placeholder="you@email.com" required>
+            </div>
+            <div>
+              <label for="phone">Phone</label>
+              <input id="phone" name="phone" type="tel" placeholder="+91 00000 00000" required>
+            </div>
+          </div>
+          <label for="program-select">Interested Program</label>
+          <select id="program-select" name="program" style="margin-bottom:16px;" required>
+            {% for p in programs %}
+            <option value="{{ p.id }}">{{ p.title }}</option>
+            {% endfor %}
+          </select>
+          <label for="msg">Message</label>
+          <textarea id="msg" name="message" placeholder="Tell us about your goal..."></textarea>
+          <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">Book Free Trial Session</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER SECTION ===== -->
+  <footer>
+    <div class="wrap">
+      <div class="footer-top">
+        <div>
+          <a href="#home" class="logo">CORE<span>SA</span></a>
+          <p>A performance gym in Chinchwad, Pune built on real coaching, honest programming, and community over ego.
+          </p>
+          <div class="footer-social">
+            <a href="#" aria-label="Instagram">IG</a>
+            <a href="#" aria-label="Facebook">FB</a>
+            <a href="#" aria-label="YouTube">YT</a>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h4>Navigate</h4>
+          <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about">About Us</a></li>
+            <li><a href="#program">Programs</a></li>
+            <li><a href="#membership">Membership</a></li>
+            <li><a href="#trainer">Trainers</a></li>
+            <li><a href="/admin/" target="_blank" style="color:var(--neon-orange); font-weight:700;">Admin Dashboard ⚙️</a></li>
+          </ul>
+        </div>
+
+
+
+        <div class="footer-col">
+          <h4>Programs</h4>
+          <ul>
+            <li><a href="#program">Strength Training</a></li>
+            <li><a href="#program">HIIT &amp; Metcon</a></li>
+            <li><a href="#program">Boxing</a></li>
+            <li><a href="#program">Yoga &amp; Mobility</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Studio</h4>
+          <ul>
+            <li>Chinchwad, Pune, MH 411033</li>
+            <li>+91 98765 43210</li>
+            <li>hello@coresa.fit</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span>© 2026 CORESA Fitness. All rights reserved.</span>
+        <span>Designed &amp; Built for Gym Management System — Sanket Jadhav</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="{% static 'core/js/app.js' %}"></script>
+</body>
+
+</html>

@@ -1,0 +1,115 @@
+{% extends 'core/admin/admin_base.html' %}
+
+{% block title %}Appointments{% endblock %}
+
+{% block admin_content %}
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Appointments</h1>
+      <p class="page-subtitle">Manage member appointments and consultations</p>
+    </div>
+    <a href="{% url 'admin_appointment_add' %}" class="btn btn-primary"><i class="fas fa-plus"></i> Add Appointment</a>
+  </div>
+
+  <div class="card">
+    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+      <h3 class="card-title">Appointments List</h3>
+      <form method="GET" action="{% url 'admin_appointments' %}" style="display: flex; gap: 10px;">
+        <select name="type" style="padding: 8px; border-radius: 4px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-main);">
+          <option value="">All Types</option>
+          {% for t in types %}
+            <option value="{{ t }}" {% if current_type == t %}selected{% endif %}>{{ t }}</option>
+          {% endfor %}
+        </select>
+        <select name="status" style="padding: 8px; border-radius: 4px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-main);">
+          <option value="">All Statuses</option>
+          {% for st in statuses %}
+            <option value="{{ st }}" {% if current_status == st %}selected{% endif %}>{{ st }}</option>
+          {% endfor %}
+        </select>
+        <div class="search-box">
+          <i class="fas fa-search"></i>
+          <input type="text" name="q" value="{{ search_query }}" placeholder="Search appointments...">
+        </div>
+        <button type="submit" class="btn btn-primary" style="padding: 6px 12px; border-radius: 4px;">Search</button>
+        {% if search_query or current_status or current_type %}
+          <a href="{% url 'admin_appointments' %}" class="btn btn-secondary" style="display: flex; align-items: center; justify-content: center; height: 100%; border-radius: 4px;">Clear</a>
+        {% endif %}
+      </form>
+    </div>
+    
+    {% if appointments %}
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Date & Time</th>
+          <th>Member</th>
+          <th>Type</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for a in appointments %}
+        <tr>
+          <td>
+            <div style="font-weight: 500; color: var(--text-main);">{{ a.appointment_date|date:"M d, Y" }}</div>
+            <div style="color: var(--text-muted); font-size: 12px;">{{ a.start_time|time:"h:i A" }} - {{ a.end_time|time:"h:i A" }}</div>
+          </td>
+          <td>
+            <div style="color: var(--text-main);">{{ a.member.first_name }} {{ a.member.last_name }}</div>
+            {% if a.trainer %}<div style="color: var(--neon-orange); font-size: 12px;">Trainer: {{ a.trainer.full_name }}</div>{% endif %}
+          </td>
+          <td>
+            <div style="color: var(--text-muted);">{{ a.appointment_type }}</div>
+          </td>
+          <td>
+            {% if a.status == 'Scheduled' or a.status == 'Confirmed' %}
+              <span class="status-badge status-active">{{ a.status }}</span>
+            {% elif a.status == 'Cancelled' %}
+              <span class="status-badge status-danger">{{ a.status }}</span>
+            {% else %}
+              <span class="status-badge status-warning">{{ a.status }}</span>
+            {% endif %}
+          </td>
+          <td>
+            <div style="display: flex; gap: 8px;">
+              <a href="{% url 'admin_appointment_detail' a.id %}" class="btn btn-secondary" style="padding: 6px 10px; font-size: 12px;"><i class="fas fa-eye"></i></a>
+              <a href="{% url 'admin_appointment_edit' a.id %}" class="btn btn-secondary" style="padding: 6px 10px; font-size: 12px;"><i class="fas fa-edit"></i></a>
+              <a href="{% url 'admin_appointment_delete' a.id %}" class="btn btn-secondary" style="padding: 6px 10px; font-size: 12px; color: var(--danger); border-color: var(--danger);"><i class="fas fa-trash"></i></a>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    
+    {% if is_paginated %}
+    <div style="padding: 16px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+      <div style="color: var(--text-muted); font-size: 14px;">
+        Showing page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+      </div>
+      <div style="display: flex; gap: 8px;">
+        {% if page_obj.has_previous %}
+          <a href="?page=1{% if search_query %}&q={{ search_query }}{% endif %}{% if current_status %}&status={{ current_status }}{% endif %}{% if current_type %}&type={{ current_type }}{% endif %}" class="btn btn-secondary" style="padding: 6px 12px;">&laquo; First</a>
+          <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if current_status %}&status={{ current_status }}{% endif %}{% if current_type %}&type={{ current_type }}{% endif %}" class="btn btn-secondary" style="padding: 6px 12px;">Previous</a>
+        {% endif %}
+        
+        {% if page_obj.has_next %}
+          <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if current_status %}&status={{ current_status }}{% endif %}{% if current_type %}&type={{ current_type }}{% endif %}" class="btn btn-secondary" style="padding: 6px 12px;">Next</a>
+          <a href="?page={{ page_obj.paginator.num_pages }}{% if search_query %}&q={{ search_query }}{% endif %}{% if current_status %}&status={{ current_status }}{% endif %}{% if current_type %}&type={{ current_type }}{% endif %}" class="btn btn-secondary" style="padding: 6px 12px;">Last &raquo;</a>
+        {% endif %}
+      </div>
+    </div>
+    {% endif %}
+    
+    {% else %}
+    <div class="empty-state">
+      <i class="fas fa-calendar-check"></i>
+      <h3>No appointments found</h3>
+      <p>Create your first appointment record.</p>
+      <a href="{% url 'admin_appointment_add' %}" class="btn btn-primary" style="margin-top: 16px;"><i class="fas fa-plus"></i> Add Appointment</a>
+    </div>
+    {% endif %}
+  </div>
+{% endblock %}
