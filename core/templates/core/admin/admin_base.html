@@ -503,21 +503,12 @@
       <li class="nav-item {% if request.resolver_match.url_name == 'admin_plans' %}active{% endif %}">
         <a href="{% url 'admin_plans' %}"><i class="fas fa-id-card"></i> Membership Plans</a>
       </li>
-      <li class="nav-item {% if request.resolver_match.url_name == 'admin_classes' %}active{% endif %}">
-        <a href="{% url 'admin_classes' %}"><i class="fas fa-dumbbell"></i> Classes</a>
-      </li>
     </ul>
 
     <div class="nav-section">Engagement</div>
     <ul class="nav-menu">
       <li class="nav-item {% if request.resolver_match.url_name == 'admin_attendance' %}active{% endif %}">
         <a href="{% url 'admin_attendance' %}"><i class="fas fa-clipboard-check"></i> Attendance</a>
-      </li>
-      <li class="nav-item {% if request.resolver_match.url_name == 'admin_workouts' %}active{% endif %}">
-        <a href="{% url 'admin_workouts' %}"><i class="fas fa-running"></i> Workouts</a>
-      </li>
-      <li class="nav-item {% if request.resolver_match.url_name == 'admin_diet_plans' %}active{% endif %}">
-        <a href="{% url 'admin_diet_plans' %}"><i class="fas fa-apple-alt"></i> Diet Plans</a>
       </li>
       <li class="nav-item {% if request.resolver_match.url_name == 'admin_appointments' %}active{% endif %}">
         <a href="{% url 'admin_appointments' %}"><i class="far fa-calendar-alt"></i> Appointments</a>
@@ -545,9 +536,7 @@
       <li class="nav-item {% if request.resolver_match.url_name == 'admin_staff' %}active{% endif %}">
         <a href="{% url 'admin_staff' %}"><i class="fas fa-user-shield"></i> Staff</a>
       </li>
-      <li class="nav-item {% if request.resolver_match.url_name == 'admin_reports' %}active{% endif %}">
-        <a href="{% url 'admin_reports' %}"><i class="fas fa-chart-line"></i> Reports & Analytics</a>
-      </li>
+
       <li class="nav-item {% if request.resolver_match.url_name == 'admin_notifications' %}active{% endif %}">
         <a href="{% url 'admin_notifications' %}"><i class="fas fa-bell"></i> Notifications</a>
       </li>

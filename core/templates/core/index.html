@@ -17,17 +17,43 @@
 <body>
 
   {% if messages %}
-  <div style="position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px;">
+  <div class="django-messages" style="position: fixed; top: 90px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; pointer-events: none; width: calc(100% - 40px); max-width: 400px;">
     {% for message in messages %}
-      <div style="padding: 16px 24px; border-radius: 8px; font-weight: 500; font-size: 14px;
+      <div class="django-message" style="pointer-events: auto; padding: 16px 24px; border-radius: 8px; font-weight: 500; font-size: 14px; position: relative; display: flex; justify-content: space-between; align-items: center;
         {% if message.tags == 'error' %}background-color: var(--danger); color: white;
         {% elif message.tags == 'success' %}background-color: var(--success); color: white;
         {% else %}background-color: var(--steel); color: var(--text-main);{% endif %}
-        box-shadow: 0 4px 12px rgba(0,0,0,0.5);">
-        {{ message }}
+        box-shadow: 0 4px 12px rgba(0,0,0,0.5); transition: opacity 0.4s ease-out;">
+        <span>{{ message }}</span>
+        <button type="button" class="message-close" aria-label="Close notification" style="background: transparent; border: none; color: inherit; font-size: 20px; cursor: pointer; margin-left: 15px; padding: 0; line-height: 1;">&times;</button>
       </div>
     {% endfor %}
   </div>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const messages = document.querySelectorAll(".django-message");
+      messages.forEach(function(msg) {
+        // Auto dismiss after 5 seconds
+        setTimeout(function() {
+          msg.style.opacity = "0";
+          setTimeout(function() {
+            if (msg.parentNode) msg.parentNode.removeChild(msg);
+          }, 400); // Wait for transition
+        }, 5000);
+
+        // Close button
+        const closeBtn = msg.querySelector(".message-close");
+        if (closeBtn) {
+          closeBtn.addEventListener("click", function() {
+            msg.style.opacity = "0";
+            setTimeout(function() {
+              if (msg.parentNode) msg.parentNode.removeChild(msg);
+            }, 400);
+          });
+        }
+      });
+    });
+  </script>
   {% endif %}
 
   <!-- ===== NAVIGATION BAR ===== -->
